@@ -51,15 +51,15 @@ public class Thrift2Protocol extends AbstractProxyProtocol {
             TNonblockingServerSocket.NonblockingAbstractServerSocketArgs serverSocketArgs = new TNonblockingServerSocket.NonblockingAbstractServerSocketArgs();
             serverSocketArgs.backlog(1000);// 1k个连接
             serverSocketArgs.port(url.getPort());
-            serverSocketArgs.clientTimeout(8000);// 10秒超时
+            serverSocketArgs.clientTimeout(8000);// 8秒超时
 
             TNonblockingServerSocket transport = new TNonblockingServerSocket(serverSocketArgs);
             // 这里使用可配置，结合spring
             selectorServerArgs = new TThreadedSelectorServer.Args(transport);
-            selectorServerArgs.workerThreads(20); // 工作线程
-            selectorServerArgs.selectorThreads(1); // selector 线程，一般1个足够用了
+            selectorServerArgs.workerThreads(20); // 工作线程，默认5个
+            selectorServerArgs.selectorThreads(1); // selector 线程，一般1个足够用了，默认1个
             // selector线程等待请求队列，业务方是期望快速返回的，服务端繁忙时客户端也不会一直等下去，所以不需设置太多
-            selectorServerArgs.acceptQueueSizePerThread(20);
+            selectorServerArgs.acceptQueueSizePerThread(10); // 默认4个
             selectorServerArgs.processor(multiplexedProcessor);
             selectorServerArgs.transportFactory(new TFramedTransport.Factory());
             selectorServerArgs.protocolFactory(new TCompactProtocol.Factory());
