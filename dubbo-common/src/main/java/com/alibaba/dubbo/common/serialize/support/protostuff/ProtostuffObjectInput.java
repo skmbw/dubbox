@@ -1,7 +1,7 @@
 package com.alibaba.dubbo.common.serialize.support.protostuff;
 
 import com.alibaba.dubbo.common.serialize.ObjectInput;
-import io.protostuff.CodedInput;
+import io.protostuff.ByteArrayInput;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.runtime.RuntimeSchema;
@@ -19,12 +19,16 @@ import java.lang.reflect.Type;
  */
 public class ProtostuffObjectInput implements ObjectInput {
 
-    private CodedInput codedInput;
-    private InputStream inputStream;
+    private ByteArrayInput codedInput;
+    private byte[] bytes;
 
     public ProtostuffObjectInput(InputStream inputStream) {
-        codedInput = CodedInput.newInstance(inputStream);
-        this.inputStream = inputStream;
+        try {
+            bytes = IOUtils.toByteArray(inputStream);
+        } catch (IOException e) {
+
+        }
+        codedInput = new ByteArrayInput(bytes, false);
     }
 
     @Override
@@ -34,7 +38,7 @@ public class ProtostuffObjectInput implements ObjectInput {
 
     @Override
     public byte readByte() throws IOException {
-        return codedInput.readRawByte();
+        return (byte) codedInput.readInt32();
     }
 
     @Override
@@ -82,7 +86,7 @@ public class ProtostuffObjectInput implements ObjectInput {
         try {
             T object = cls.newInstance();
             Schema<T> schema = RuntimeSchema.getSchema(cls);
-            ProtostuffIOUtil.mergeFrom(IOUtils.toByteArray(inputStream), object, schema);
+            ProtostuffIOUtil.mergeFrom(bytes, object, schema);
             return object;
         } catch (Exception e) {
             throw new IOException("class newInstance error, class=" + cls.getName(), e);
