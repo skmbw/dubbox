@@ -1,10 +1,7 @@
 package com.alibaba.dubbo.common.serialize.support.protostuff;
 
 import com.alibaba.dubbo.common.serialize.ObjectInput;
-import io.protostuff.ByteArrayInput;
-import io.protostuff.ProtostuffIOUtil;
-import io.protostuff.Schema;
-import io.protostuff.runtime.RuntimeSchema;
+import io.protostuff.CodedInput;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -19,7 +16,7 @@ import java.lang.reflect.Type;
  */
 public class ProtostuffObjectInput implements ObjectInput {
 
-    private ByteArrayInput codedInput;
+    private CodedInput codedInput;
     private byte[] bytes;
 
     public ProtostuffObjectInput(InputStream inputStream) {
@@ -28,7 +25,7 @@ public class ProtostuffObjectInput implements ObjectInput {
         } catch (IOException e) {
 
         }
-        codedInput = new ByteArrayInput(bytes, false);
+        codedInput = CodedInput.newInstance(inputStream);
     }
 
     @Override
@@ -68,7 +65,8 @@ public class ProtostuffObjectInput implements ObjectInput {
 
     @Override
     public String readUTF() throws IOException {
-        return codedInput.readString();
+//        return codedInput.readString();
+        return ProtoUtils.fromBytes(bytes);
     }
 
     @Override
@@ -78,19 +76,21 @@ public class ProtostuffObjectInput implements ObjectInput {
 
     @Override
     public Object readObject() throws IOException, ClassNotFoundException {
-        throw new IllegalStateException("not support operation.");
+//        throw new IllegalStateException("not support operation.");
+        return ProtoUtils.fromBytes(bytes);
     }
 
     @Override
     public <T> T readObject(Class<T> cls) throws IOException, ClassNotFoundException {
-        try {
-            T object = cls.newInstance();
-            Schema<T> schema = RuntimeSchema.getSchema(cls);
-            ProtostuffIOUtil.mergeFrom(bytes, object, schema);
-            return object;
-        } catch (Exception e) {
-            throw new IOException("class newInstance error, class=" + cls.getName(), e);
-        }
+        return ProtoUtils.fromBytes(bytes);
+//        try {
+//            T object = cls.newInstance();
+//            Schema<T> schema = RuntimeSchema.getSchema(cls);
+//            ProtostuffIOUtil.mergeFrom(bytes, object, schema);
+//            return object;
+//        } catch (Exception e) {
+//            throw new IOException("class newInstance error, class=" + cls.getName(), e);
+//        }
     }
 
     @Override

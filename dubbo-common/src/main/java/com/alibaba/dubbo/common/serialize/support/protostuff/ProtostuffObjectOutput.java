@@ -2,10 +2,7 @@ package com.alibaba.dubbo.common.serialize.support.protostuff;
 
 import com.alibaba.dubbo.common.serialize.ObjectOutput;
 import io.protostuff.LinkedBuffer;
-import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.ProtostuffOutput;
-import io.protostuff.Schema;
-import io.protostuff.runtime.RuntimeSchema;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -65,7 +62,9 @@ public class ProtostuffObjectOutput implements ObjectOutput {
 
     @Override
     public void writeUTF(String v) throws IOException {
-        output.writeString(fieldNumber++, v, false);
+//        output.writeString(fieldNumber++, v, false);
+//        outputStream.write(v.getBytes());
+        writeObject(v);
     }
 
     @Override
@@ -90,9 +89,12 @@ public class ProtostuffObjectOutput implements ObjectOutput {
     @Override
     public void writeObject(Object obj) throws IOException {
         if (obj == null) {
+//            outputStream.write(1);
             return;
         }
-        Schema schema = RuntimeSchema.getSchema(obj.getClass());
-        ProtostuffIOUtil.writeTo(outputStream, obj, schema, LinkedBuffer.allocate());
+//        Schema schema = RuntimeSchema.getSchema(obj.getClass());
+//        ProtostuffIOUtil.writeTo(outputStream, obj, schema, LinkedBuffer.allocate());
+        byte[] result = ProtoUtils.toBytes(obj);
+        outputStream.write(result);
     }
 }
