@@ -30,15 +30,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 /**
+ * 去掉父类对子类的依赖，set使用可排序的set。因为kryo注册顺序时有关系的，两边要一致。
+ *
  * @author lishen
+ * @author yinlei
  */
 public abstract class KryoFactory {
 
 //    private static final KryoFactory factory = new PrototypeKryoFactory();
 //    private static final KryoFactory factory = new SingletonKryoFactory();
-    private static final KryoFactory factory = new PooledKryoFactory();
 
-    private final Set<Class> registrations = new LinkedHashSet<Class>();
+//    private static final KryoFactory factory = new PooledKryoFactory();
+
+    private final SortedSet<Class> registrations = new TreeSet<>(Comparator.comparing(Class::getName));
 
     private boolean registrationRequired;
 
@@ -46,12 +50,11 @@ public abstract class KryoFactory {
 
     protected KryoFactory() {
         // TODO configurable
-//        Log.DEBUG();
     }
 
-    public static KryoFactory getDefaultFactory() {
-        return factory;
-    }
+//    public static KryoFactory getDefaultFactory() {
+//        return factory;
+//    }
 
     /**
      * only supposed to be called at startup time

@@ -21,11 +21,14 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
+ * 这里要改，用过之后，归还后，直接弹出时放掉。没有缓存的意义。
+ *
+ * @author yinlei
  * @author lishen
  */
 public class PooledKryoFactory extends KryoFactory {
 
-    private final Queue<Kryo> pool = new ConcurrentLinkedQueue<Kryo>();
+    private final Queue<Kryo> pool = new ConcurrentLinkedQueue<>();
 
     @Override
     public void returnKryo(Kryo kryo) {

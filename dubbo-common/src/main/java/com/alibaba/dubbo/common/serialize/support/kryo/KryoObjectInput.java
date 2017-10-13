@@ -30,7 +30,7 @@ import java.lang.reflect.Type;
  */
 public class KryoObjectInput implements ObjectInput, Cleanable {
 
-    private Kryo kryo = KryoFactory.getDefaultFactory().getKryo();
+    private Kryo kryo = KryoUtils.getKryo();
     private Input input;
 
     public KryoObjectInput(InputStream inputStream) {
@@ -152,7 +152,8 @@ public class KryoObjectInput implements ObjectInput, Cleanable {
     }
 
     public void cleanup() {
-        KryoFactory.getDefaultFactory().returnKryo(kryo);
+//        KryoFactory.getDefaultFactory().returnKryo(kryo);
+        KryoUtils.returnKryo(kryo);
         kryo = null;
     }
 }

@@ -28,7 +28,8 @@ import java.io.OutputStream;
  */
 public class KryoObjectOutput implements ObjectOutput, Cleanable {
 
-    private Kryo kryo = KryoFactory.getDefaultFactory().getKryo();
+//    private Kryo kryo = KryoFactory.getDefaultFactory().getKryo();
+    private Kryo kryo = KryoUtils.getKryo();
     private Output output;
 
     public KryoObjectOutput(OutputStream outputStream) {
@@ -96,7 +97,8 @@ public class KryoObjectOutput implements ObjectOutput, Cleanable {
     }
 
     public void cleanup() {
-        KryoFactory.getDefaultFactory().returnKryo(kryo);
+//        KryoFactory.getDefaultFactory().returnKryo(kryo);
+        KryoUtils.returnKryo(kryo);
         kryo = null;
     }
 }
