@@ -21,7 +21,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * 这里要改，用过之后，归还后，直接弹出时放掉。没有缓存的意义。
+ * 这里要改，用过之后，归还后放入队尾。没有回收机制。
  *
  * @author yinlei
  * @author lishen
