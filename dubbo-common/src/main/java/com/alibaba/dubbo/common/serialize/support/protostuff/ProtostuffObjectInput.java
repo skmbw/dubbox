@@ -1,96 +1,90 @@
 package com.alibaba.dubbo.common.serialize.support.protostuff;
 
 import com.alibaba.dubbo.common.serialize.ObjectInput;
-import io.protostuff.CodedInput;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 
 /**
- * 基于protostuff的，对象反序列化。
+ * 基于Protostuff的，对象反序列化。
  *
  * @author yinlei
  * @since 2017/10/13 9:28
  */
 public class ProtostuffObjectInput implements ObjectInput {
 
-    private CodedInput codedInput;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProtostuffObjectInput.class);
+
     private byte[] bytes;
 
     public ProtostuffObjectInput(InputStream inputStream) {
         try {
             bytes = IOUtils.toByteArray(inputStream);
         } catch (IOException e) {
-
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Protostuff convert to byte[] error, msg=[{}].",
+                        e.getClass().getName() + e.getMessage());
+            }
         }
-        codedInput = CodedInput.newInstance(inputStream);
     }
 
     @Override
     public boolean readBool() throws IOException {
-        return codedInput.readBool();
+        return ProtoUtils.fromBytes(bytes);
     }
 
     @Override
     public byte readByte() throws IOException {
-        return (byte) codedInput.readInt32();
+        return ProtoUtils.fromBytes(bytes);
     }
 
     @Override
     public short readShort() throws IOException {
-        return (short) codedInput.readInt32();
+        return ProtoUtils.fromBytes(bytes);
     }
 
     @Override
     public int readInt() throws IOException {
-        return codedInput.readInt32();
+        return ProtoUtils.fromBytes(bytes);
     }
 
     @Override
     public long readLong() throws IOException {
-        return codedInput.readInt64();
+        return ProtoUtils.fromBytes(bytes);
     }
 
     @Override
     public float readFloat() throws IOException {
-        return codedInput.readFloat();
+        return ProtoUtils.fromBytes(bytes);
     }
 
     @Override
     public double readDouble() throws IOException {
-        return codedInput.readDouble();
+        return ProtoUtils.fromBytes(bytes);
     }
 
     @Override
     public String readUTF() throws IOException {
-//        return codedInput.readString();
         return ProtoUtils.fromBytes(bytes);
     }
 
     @Override
     public byte[] readBytes() throws IOException {
-        return codedInput.readByteArray();
+        return bytes;
     }
 
     @Override
     public Object readObject() throws IOException, ClassNotFoundException {
-//        throw new IllegalStateException("not support operation.");
         return ProtoUtils.fromBytes(bytes);
     }
 
     @Override
     public <T> T readObject(Class<T> cls) throws IOException, ClassNotFoundException {
         return ProtoUtils.fromBytes(bytes);
-//        try {
-//            T object = cls.newInstance();
-//            Schema<T> schema = RuntimeSchema.getSchema(cls);
-//            ProtostuffIOUtil.mergeFrom(bytes, object, schema);
-//            return object;
-//        } catch (Exception e) {
-//            throw new IOException("class newInstance error, class=" + cls.getName(), e);
-//        }
     }
 
     @Override

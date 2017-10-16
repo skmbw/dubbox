@@ -1,8 +1,6 @@
 package com.alibaba.dubbo.common.serialize.support.protostuff;
 
 import com.alibaba.dubbo.common.serialize.ObjectOutput;
-import io.protostuff.LinkedBuffer;
-import io.protostuff.ProtostuffOutput;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,86 +13,75 @@ import java.io.OutputStream;
  */
 public class ProtostuffObjectOutput implements ObjectOutput {
 
-    private OutputStream outputStream;
-    private ProtostuffOutput output;
-    private int fieldNumber;
+    private OutputStream output;
 
-    public ProtostuffObjectOutput(OutputStream outputStream) {
-        this.outputStream = outputStream;
-        output = new ProtostuffOutput(LinkedBuffer.allocate(1024));
-        fieldNumber = 1;
+    public ProtostuffObjectOutput(OutputStream output) {
+        this.output = output;
     }
 
     @Override
     public void writeBool(boolean v) throws IOException {
-        output.writeBool(fieldNumber++, v, false);
+        output.write(ProtoUtils.toBytes(v, 13));
     }
 
     @Override
     public void writeByte(byte v) throws IOException {
-        output.writeInt32(fieldNumber++, v, false);
+        output.write(ProtoUtils.toBytes(v, 9));
     }
 
     @Override
     public void writeShort(short v) throws IOException {
-        output.writeInt32(fieldNumber++, v, false);
+        output.write(ProtoUtils.toBytes(v, 11));
     }
 
     @Override
     public void writeInt(int v) throws IOException {
-        output.writeInt32(fieldNumber++, v, false);
+        output.write(ProtoUtils.toBytes(v, 4));
     }
 
     @Override
     public void writeLong(long v) throws IOException {
-        output.writeInt64(fieldNumber++, v, false);
+        output.write(ProtoUtils.toBytes(v, 5));
     }
 
     @Override
     public void writeFloat(float v) throws IOException {
-        output.writeFloat(fieldNumber++, v, false);
+        output.write(ProtoUtils.toBytes(v, 10));
     }
 
     @Override
     public void writeDouble(double v) throws IOException {
-        output.writeDouble(fieldNumber++, v, false);
+        output.write(ProtoUtils.toBytes(v, 6));
     }
 
     @Override
     public void writeUTF(String v) throws IOException {
-//        output.writeString(fieldNumber++, v, false);
-//        outputStream.write(v.getBytes());
-        writeObject(v);
+        output.write(ProtoUtils.toBytes(v, 12));
     }
 
     @Override
     public void writeBytes(byte[] v) throws IOException {
-        output.writeByteArray(fieldNumber++, v, false);
+        output.write(v);
     }
 
     @Override
     public void writeBytes(byte[] v, int off, int len) throws IOException {
         byte[] v2 = new byte[len];
         System.arraycopy(v, off, v2, 0, len);
-        output.writeByteArray(fieldNumber++, v2, false);
+        output.write(v2);
     }
 
     @Override
     public void flushBuffer() throws IOException {
-        byte[] bytes = output.toByteArray();
-        outputStream.write(bytes);
-        outputStream.flush();
+        output.flush();
     }
 
     @Override
     public void writeObject(Object obj) throws IOException {
         if (obj == null) {
-//            outputStream.write(1);
             return;
         }
-//        Schema schema = RuntimeSchema.getSchema(obj.getClass());
-//        ProtostuffIOUtil.writeTo(outputStream, obj, schema, LinkedBuffer.allocate());
-        byte[] result = ProtoUtils.toBytes(obj);
-        outputStream.write(result);
+        byte[] result = ProtoUtils.toBytes(obj, 0);
+        output.write(result);
     }
 }

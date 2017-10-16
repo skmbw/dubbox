@@ -26,18 +26,67 @@ public class ProtoUtils {
 	/**
 	 * 将对象序列化成字节数组
 	 * @param object 要被序列化的对象
+	 * @param type 对象类型
 	 * @return 序列化后的字节数组
 	 */
 	@SuppressWarnings("unchecked")
-	public static byte[] toBytes(Object object) {
+	public static byte[] toBytes(Object object, int type) {
 		if (object == null) {
 			return null;
 		}
+
 		byte[] bytes;
+		if (type >= 4) {
+			bytes = object.toString().getBytes(UTF8);
+			int byteLength = bytes.length;
+			byte[] destBytes = new byte[byteLength + 1];
+			switch (type) {
+				case 4:
+					destBytes[0] = 4;
+					break;
+				case 5:
+					destBytes[0] = 5;
+					break;
+				case 6:
+					destBytes[0] = 6;
+					break;
+				case 7:
+					destBytes[0] = 7;
+					break;
+				case 8:
+					destBytes[0] = 8;
+					break;
+				case 9:
+					destBytes[0] = 9;
+					break;
+				case 10:
+					destBytes[0] = 10;
+					break;
+				case 11:
+					destBytes[0] = 11;
+					break;
+				case 12:
+					destBytes[0] = 12;
+					break;
+				case 13:
+					destBytes = new byte[2];
+					destBytes[0] = 12;
+					Boolean bool = (Boolean) object;
+					if (bool) {
+						destBytes[1] = 1;
+					}
+					return destBytes;
+				default: // 非基本类型
+					break;
+			}
+			System.arraycopy(bytes, 0, destBytes, 1, byteLength);
+			return destBytes;
+		}
+
 		Class<Object> clazz;
 		if (object instanceof List) {
 			List<Object> list = (List<Object>) object;
-			if (list.size() == 0) {
+			if (list.isEmpty()) {
 				return null;
 			}
 			clazz = (Class<Object>) list.get(0).getClass();
@@ -47,7 +96,7 @@ public class ProtoUtils {
 			return build(bytes, clazz, 1);
 		} else if (object instanceof Set) {
 			Set<Object> set = (Set<Object>) object;
-			if (set.size() == 0) {
+			if (set.isEmpty()) {
 				return null;
 			}
 			clazz = (Class<Object>) set.iterator().next().getClass();
@@ -57,47 +106,13 @@ public class ProtoUtils {
 			return build(bytes, clazz, 2);
 		} else if (object instanceof Map) {
 			Map<String, Object> map = (Map<String, Object>) object;
-			if (map.size() == 0) {
+			if (map.isEmpty()) {
 				return null;
 			}
 			clazz = (Class<Object>) map.values().iterator().next().getClass();
 			bytes = mapToBytes(clazz, map);
 
 			return build(bytes, clazz, 3);
-		} else if (object instanceof Number) {
-			bytes = object.toString().getBytes(UTF8);
-			int byteLength = bytes.length;
-			byte[] destBytes = new byte[byteLength + 1];
-
-			if (object instanceof Integer) {
-				destBytes[0] = 4;
-			} else if (object instanceof Long) {
-				destBytes[0] = 5;
-			} else if (object instanceof Double) {
-				destBytes[0] = 6;
-			} else if (object instanceof BigInteger) {
-				destBytes[0] = 7;
-			} else if (object instanceof BigDecimal) {
-				destBytes[0] = 8;
-			} else if (object instanceof Byte) {
-				destBytes[0] = 9;
-			} else if (object instanceof Float) {
-				destBytes[0] = 10;
-			} else if (object instanceof Short) {
-				destBytes[0] = 11;
-			} else {
-				throw new RuntimeException("不支持的数字类型:[" + object.getClass().getName());
-			}
-			System.arraycopy(bytes, 0, destBytes, 1, byteLength);
-			return destBytes;
-		} else if (object instanceof String) {
-			bytes = object.toString().getBytes(UTF8);
-
-			int byteLength = bytes.length;
-			byte[] destBytes = new byte[byteLength + 1];
-			destBytes[0] = 12;
-			System.arraycopy(bytes, 0, destBytes, 1, byteLength);
-			return destBytes;
 		} else {
 			clazz = (Class<Object>) object.getClass();
 			Schema<Object> schema = RuntimeSchema.getSchema(clazz);
@@ -200,6 +215,13 @@ public class ProtoUtils {
 			case 12:
 				args = new String(bytes, 1, byteLength - 1, UTF8);
 				return (T) args;
+			case 13:
+				byte bb = bytes[1];
+				if (bb == 1) {
+					return (T) Boolean.TRUE;
+				} else {
+					return (T) Boolean.FALSE;
+				}
 			default:
 				break;
 		}
@@ -244,59 +266,5 @@ public class ProtoUtils {
 
 	private static int getLength(byte[] res) {
 		return (res[1] & 0xff) | ((res[2] << 8) & 0xff00) | ((res[3] << 24) >>> 8) | (res[4] << 24);
-	}
-
-	/**
-	 * 将JavaBean序列化成字节数组。对于集合最好包装一层JavaBean
-	 * @param object 待序列化的对象
-	 * @return 序列化后字节数组
-	 */
-	public static byte[] serialize(Object object) {
-		if (object == null) {
-			return null;
-		}
-		@SuppressWarnings("unchecked")
-		Class<Object> class1 = (Class<Object>) object.getClass();
-		Schema<Object> schema = RuntimeSchema.getSchema(class1);
-		LinkedBuffer buffer = LinkedBuffer.allocate();
-		return ProtobufIOUtil.toByteArray(object, schema, buffer);
-	}
-
-	/**
-	 * 反序列化字节数组为JavaBean。可以通过返回值接收参数object，也可不用。protostuff会merge数据
-	 * @param object 反序列化回来的对象，要自己传入
-	 * @param bytes 待填充的字节数据
-	 */
-	public static <T> T deserialize(T object, byte[] bytes) {
-		@SuppressWarnings("unchecked")
-		Class<Object> class1 = (Class<Object>) object.getClass();
-		Schema<Object> schema = RuntimeSchema.getSchema(class1);
-		ProtobufIOUtil.mergeFrom(bytes, object, schema);
-		return object;
-	}
-
-	/**
-	 * 将JavaBean序列化成字节数组。对于集合最好包装一层JavaBean，需要schema
-	 * @param object 待序列化的对象
-	 * @param schema 对象schema，可以是Protostuff编译的
-	 * @return 序列化后字节数组
-	 */
-	public static <T> byte[] serialize(T object, Schema<T> schema) {
-		if (object == null || schema == null) {
-			return null;
-		}
-		LinkedBuffer buffer = LinkedBuffer.allocate();
-		return ProtobufIOUtil.toByteArray(object, schema, buffer);
-	}
-
-	/**
-	 * 反序列化字节数组为JavaBean。需要schema。可以通过返回值接收参数object，也可不用。protostuff会merge数据。
-	 * @param object 反序列化回来的对象，要自己传入
-	 * @param bytes 待填充的字节数据
-	 * @param schema 对象schema，可以是Protostuff编译的
-	 */
-	public static <T> T deserialize(T object, byte[] bytes, Schema<T> schema) {
-		ProtobufIOUtil.mergeFrom(bytes, object, schema);
-		return object;
 	}
 }
