@@ -61,14 +61,22 @@ public class ProtostuffObjectOutput implements ObjectOutput {
 
     @Override
     public void writeBytes(byte[] v) throws IOException {
-        output.write(v);
+        if (v == null) {
+            output.write(-1);
+        } else {
+            output.write(v);
+        }
     }
 
     @Override
     public void writeBytes(byte[] v, int off, int len) throws IOException {
-        byte[] v2 = new byte[len];
-        System.arraycopy(v, off, v2, 0, len);
-        output.write(v2);
+        if (v == null) {
+            output.write(-1);
+        } else {
+            byte[] v2 = new byte[len];
+            System.arraycopy(v, off, v2, 0, len);
+            output.write(v2);
+        }
     }
 
     @Override

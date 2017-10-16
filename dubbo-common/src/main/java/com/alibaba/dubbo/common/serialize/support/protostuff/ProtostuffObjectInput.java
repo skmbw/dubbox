@@ -49,7 +49,11 @@ public class ProtostuffObjectInput implements ObjectInput {
 
     @Override
     public int readInt() throws IOException {
-        return ProtoUtils.fromBytes(bytes);
+        try {
+            return ProtoUtils.fromBytes(bytes);
+        } catch (ClassCastException e) {
+            return 1; // version
+        }
     }
 
     @Override
@@ -79,12 +83,15 @@ public class ProtostuffObjectInput implements ObjectInput {
 
     @Override
     public Object readObject() throws IOException, ClassNotFoundException {
+        if (bytes == null || bytes.length == 0) {
+            return null;
+        }
         return ProtoUtils.fromBytes(bytes);
     }
 
     @Override
     public <T> T readObject(Class<T> cls) throws IOException, ClassNotFoundException {
-        return ProtoUtils.fromBytes(bytes);
+        return ProtoUtils.fromBytes(bytes); // 这里会有Map，序列化接口的信息
     }
 
     @Override

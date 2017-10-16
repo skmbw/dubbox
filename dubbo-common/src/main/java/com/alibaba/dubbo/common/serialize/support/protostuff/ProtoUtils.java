@@ -31,96 +31,97 @@ public class ProtoUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static byte[] toBytes(Object object, int type) {
-		if (object == null) {
-			return null;
-		}
-
-		byte[] bytes;
-		if (type >= 4) {
-			bytes = object.toString().getBytes(UTF8);
-			int byteLength = bytes.length;
-			byte[] destBytes = new byte[byteLength + 1];
-			switch (type) {
-				case 4:
-					destBytes[0] = 4;
-					break;
-				case 5:
-					destBytes[0] = 5;
-					break;
-				case 6:
-					destBytes[0] = 6;
-					break;
-				case 7:
-					destBytes[0] = 7;
-					break;
-				case 8:
-					destBytes[0] = 8;
-					break;
-				case 9:
-					destBytes[0] = 9;
-					break;
-				case 10:
-					destBytes[0] = 10;
-					break;
-				case 11:
-					destBytes[0] = 11;
-					break;
-				case 12:
-					destBytes[0] = 12;
-					break;
-				case 13:
-					destBytes = new byte[2];
-					destBytes[0] = 12;
-					Boolean bool = (Boolean) object;
-					if (bool) {
-						destBytes[1] = 1;
-					}
-					return destBytes;
-				default: // 非基本类型
-					break;
-			}
-			System.arraycopy(bytes, 0, destBytes, 1, byteLength);
-			return destBytes;
-		}
-
-		Class<Object> clazz;
-		if (object instanceof List) {
-			List<Object> list = (List<Object>) object;
-			if (list.isEmpty()) {
-				return null;
-			}
-			clazz = (Class<Object>) list.get(0).getClass();
-
-			bytes = collectToBytes(clazz, list);
-
-			return build(bytes, clazz, 1);
-		} else if (object instanceof Set) {
-			Set<Object> set = (Set<Object>) object;
-			if (set.isEmpty()) {
-				return null;
-			}
-			clazz = (Class<Object>) set.iterator().next().getClass();
-
-			bytes = collectToBytes(clazz, set);
-
-			return build(bytes, clazz, 2);
-		} else if (object instanceof Map) {
-			Map<String, Object> map = (Map<String, Object>) object;
-			if (map.isEmpty()) {
-				return null;
-			}
-			clazz = (Class<Object>) map.values().iterator().next().getClass();
-			bytes = mapToBytes(clazz, map);
-
-			return build(bytes, clazz, 3);
-		} else {
-			clazz = (Class<Object>) object.getClass();
-			Schema<Object> schema = RuntimeSchema.getSchema(clazz);
-			LinkedBuffer buffer = LinkedBuffer.allocate();
-			bytes = ProtobufIOUtil.toByteArray(object, schema, buffer);
-
-			return build(bytes, clazz, 0);
-		}
+		return toBytes(object);
+//		if (object == null) {
+//			return null;
+//		}
+//
+//		byte[] bytes;
+//		if (type >= 4) {
+//			bytes = object.toString().getBytes(UTF8);
+//			int byteLength = bytes.length;
+//			byte[] destBytes = new byte[byteLength + 1];
+//			switch (type) {
+//				case 4:
+//					destBytes[0] = 4;
+//					break;
+//				case 5:
+//					destBytes[0] = 5;
+//					break;
+//				case 6:
+//					destBytes[0] = 6;
+//					break;
+//				case 7:
+//					destBytes[0] = 7;
+//					break;
+//				case 8:
+//					destBytes[0] = 8;
+//					break;
+//				case 9:
+//					destBytes[0] = 9;
+//					break;
+//				case 10:
+//					destBytes[0] = 10;
+//					break;
+//				case 11:
+//					destBytes[0] = 11;
+//					break;
+//				case 12:
+//					destBytes[0] = 12;
+//					break;
+//				case 13:
+//					destBytes = new byte[2];
+//					destBytes[0] = 12;
+//					Boolean bool = (Boolean) object;
+//					if (bool) {
+//						destBytes[1] = 1;
+//					}
+//					return destBytes;
+//				default: // 非基本类型
+//					break;
+//			}
+//			System.arraycopy(bytes, 0, destBytes, 1, byteLength);
+//			return destBytes;
+//		}
+//
+//		Class<Object> clazz;
+//		if (object instanceof List) {
+//			List<Object> list = (List<Object>) object;
+//			if (list.isEmpty()) {
+//				return null;
+//			}
+//			clazz = (Class<Object>) list.get(0).getClass();
+//
+//			bytes = collectToBytes(clazz, list);
+//
+//			return build(bytes, clazz, 1);
+//		} else if (object instanceof Set) {
+//			Set<Object> set = (Set<Object>) object;
+//			if (set.isEmpty()) {
+//				return null;
+//			}
+//			clazz = (Class<Object>) set.iterator().next().getClass();
+//
+//			bytes = collectToBytes(clazz, set);
+//
+//			return build(bytes, clazz, 2);
+//		} else if (object instanceof Map) {
+//			Map<String, Object> map = (Map<String, Object>) object;
+//			if (map.isEmpty()) {
+//				return null;
+//			}
+//			clazz = (Class<Object>) map.values().iterator().next().getClass();
+//			bytes = mapToBytes(clazz, map);
+//
+//			return build(bytes, clazz, 3);
+//		} else {
+//			clazz = (Class<Object>) object.getClass();
+//			Schema<Object> schema = RuntimeSchema.getSchema(clazz);
+//			LinkedBuffer buffer = LinkedBuffer.allocate();
+//			bytes = ProtobufIOUtil.toByteArray(object, schema, buffer);
+//
+//			return build(bytes, clazz, 0);
+//		}
 	}
 
 	/**
@@ -166,38 +167,50 @@ public class ProtoUtils {
 			return build(bytes, clazz, 3);
 		} else if (object instanceof Number) {
 			bytes = object.toString().getBytes(UTF8);
-			int byteLength = bytes.length;
-			byte[] destBytes = new byte[byteLength + 1];
+//			int byteLength = bytes.length;
+//			byte[] destBytes = new byte[byteLength + 1];
+			byte[] destBytes = new byte[1];
 
+			int type = 0;
 			if (object instanceof Integer) {
 				destBytes[0] = 4;
+				type = 4;
 			} else if (object instanceof Long) {
 				destBytes[0] = 5;
+				type = 5;
 			} else if (object instanceof Double) {
 				destBytes[0] = 6;
+				type = 6;
 			} else if (object instanceof BigInteger) {
 				destBytes[0] = 7;
+				type = 7;
 			} else if (object instanceof BigDecimal) {
 				destBytes[0] = 8;
+				type = 8;
 			} else if (object instanceof Byte) {
 				destBytes[0] = 9;
+				type = 9;
 			} else if (object instanceof Float) {
 				destBytes[0] = 10;
+				type = 10;
 			} else if (object instanceof Short) {
 				destBytes[0] = 11;
+				type = 11;
 			} else {
 				throw new RuntimeException("不支持的数字类型:[" + object.getClass().getName());
 			}
-			System.arraycopy(bytes, 0, destBytes, 1, byteLength);
-			return destBytes;
+//			System.arraycopy(bytes, 0, destBytes, 1, byteLength);
+//			return destBytes;
+			return build(bytes, type);
 		} else if (object instanceof String) {
 			bytes = object.toString().getBytes(UTF8);
 
-			int byteLength = bytes.length;
-			byte[] destBytes = new byte[byteLength + 1];
-			destBytes[0] = 12;
-			System.arraycopy(bytes, 0, destBytes, 1, byteLength);
-			return destBytes;
+//			int byteLength = bytes.length;
+//			byte[] destBytes = new byte[byteLength + 1];
+//			destBytes[0] = 12;
+//			System.arraycopy(bytes, 0, destBytes, 1, byteLength);
+//			return destBytes;
+			return build(bytes, 12);
 		} else if (object instanceof Boolean) {
 			byte[] destBytes = new byte[2];
 			destBytes[0] = 13;
@@ -242,6 +255,17 @@ public class ProtoUtils {
 		return destBytes;
 	}
 
+	public static byte[] build(byte[] bytes, int type) {
+		int byteLength = bytes.length;
+		byte[] destBytes = new byte[byteLength + 5];
+		destBytes[0] = (byte) type;
+
+		int length = bytes.length;
+		mergeBytes(length, destBytes, 1, 4);
+		System.arraycopy(bytes, 0, destBytes, 5, byteLength);
+		return destBytes;
+	}
+
 	/**
 	 * 将int转为byte数组，字节数组的低位是整型的低字节位
 	 * @param source 要转换的int值
@@ -270,55 +294,59 @@ public class ProtoUtils {
 
 		int byteLength = bytes.length;
 		int type = bytes[0];
-		// 处理基本类型，protobuf处理基本类型慢
-		switch (type) { // switch比if else快很多
-			case 4:
-				String args = new String(bytes, 1, byteLength - 1, UTF8);
-				Integer i = new Integer(args);
-				return (T) i;
-			case 5:
-				args = new String(bytes, 1, byteLength - 1, UTF8);
-				Long l = new Long(args);
-				return (T) l;
-			case 6:
-				args = new String(bytes, 1, byteLength - 1, UTF8);
-				Double d = new Double(args);
-				return (T) d;
-			case 7:
-				args = new String(bytes, 1, byteLength - 1, UTF8);
-				BigInteger bi = new BigInteger(args);
-				return (T) bi;
-			case 8:
-				args = new String(bytes, 1, byteLength - 1, UTF8);
-				BigDecimal bd = new BigDecimal(args);
-				return (T) bd;
-			case 9:
-				args = new String(bytes, 1, byteLength - 1, UTF8);
-				Byte b = new Byte(args);
-				return (T) b;
-			case 10:
-				args = new String(bytes, 1, byteLength - 1, UTF8);
-				Float f = new Float(args);
-				return (T) f;
-			case 11:
-				args = new String(bytes, 1, byteLength - 1, UTF8);
-				Short s = new Short(args);
-				return (T) s;
-			case 12:
-				args = new String(bytes, 1, byteLength - 1, UTF8);
-				return (T) args;
-			case 13:
-				byte bb = bytes[1];
-				if (bb == 1) {
-					return (T) Boolean.TRUE;
-				} else {
-					return (T) Boolean.FALSE;
-				}
-			default:
-				break;
+		int length = getLength(bytes);
+		if (type >= 4) {
+			String args = new String(bytes, 5, length, UTF8);
+			// 处理基本类型，protobuf处理基本类型慢
+			switch (type) { // switch比if else快很多
+				case 4:
+//					String args = new String(bytes, 1, byteLength - 1, UTF8);
+					Integer i = new Integer(args);
+					return (T) i;
+				case 5:
+//					args = new String(bytes, 1, byteLength - 1, UTF8);
+					Long l = new Long(args);
+					return (T) l;
+				case 6:
+//					args = new String(bytes, 1, byteLength - 1, UTF8);
+					Double d = new Double(args);
+					return (T) d;
+				case 7:
+//					args = new String(bytes, 1, byteLength - 1, UTF8);
+					BigInteger bi = new BigInteger(args);
+					return (T) bi;
+				case 8:
+//					args = new String(bytes, 1, byteLength - 1, UTF8);
+					BigDecimal bd = new BigDecimal(args);
+					return (T) bd;
+				case 9:
+//					args = new String(bytes, 1, byteLength - 1, UTF8);
+					Byte b = new Byte(args);
+					return (T) b;
+				case 10:
+//					args = new String(bytes, 1, byteLength - 1, UTF8);
+					Float f = new Float(args);
+					return (T) f;
+				case 11:
+//					args = new String(bytes, 1, byteLength - 1, UTF8);
+					Short s = new Short(args);
+					return (T) s;
+				case 12:
+//					args = new String(bytes, 1, byteLength - 1, UTF8);
+					return (T) args;
+				case 13:
+					byte bb = bytes[1];
+					if (bb == 1) {
+						return (T) Boolean.TRUE;
+					} else {
+						return (T) Boolean.FALSE;
+					}
+				default:
+					break;
+			}
 		}
 
-		int length = getLength(bytes);
+//		int length = getLength(bytes);
 		String className = new String(bytes, 5, length, UTF8);
 		Class clazz = ClassUtils.forName(className);
 		Schema schema = RuntimeSchema.getSchema(clazz);
