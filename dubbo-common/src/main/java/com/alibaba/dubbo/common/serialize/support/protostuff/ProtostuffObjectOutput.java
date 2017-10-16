@@ -81,7 +81,7 @@ public class ProtostuffObjectOutput implements ObjectOutput {
         if (obj == null) {
             return;
         }
-        byte[] result = ProtoUtils.toBytes(obj, 0);
+        byte[] result = ProtoUtils.toBytes(obj);
         output.write(result);
     }
 }
