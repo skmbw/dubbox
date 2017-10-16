@@ -200,7 +200,7 @@ public class ProtoUtils {
 			return destBytes;
 		} else if (object instanceof Boolean) {
 			byte[] destBytes = new byte[2];
-			destBytes[0] = 12;
+			destBytes[0] = 13;
 			if ((Boolean) object) {
 				destBytes[1] = 1;
 			}
