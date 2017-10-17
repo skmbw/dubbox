@@ -140,7 +140,7 @@ public class ProtostuffObjectInput implements ObjectInput {
 
         byte[] lendst = new byte[4];
         byteBuffer.get(lendst, 0, 4); // 不需要偏移量，已经读过了
-        int len = ProtoUtils.getLength(lendst);
+        int len = getLength(lendst);
         byte[] strdst = new byte[len];
         byteBuffer.get(strdst, 0, len); // 不需要偏移量，已经读过了
         return new String(strdst);
@@ -183,7 +183,7 @@ public class ProtostuffObjectInput implements ObjectInput {
 
         byte[] lendst = new byte[4];
         byteBuffer.get(lendst, 0, 4); // 不需要偏移量，已经读过了
-        int len = ProtoUtils.getLength(lendst);
+        int len = getLength(lendst);
         byte[] strdst = new byte[len];
         byteBuffer.get(strdst, 0, len); // 不需要偏移量，已经读过了
         return strdst;
@@ -230,4 +230,7 @@ public class ProtostuffObjectInput implements ObjectInput {
         return readObject(cls);
     }
 
+    private int getLength(byte[] res) {
+        return (res[0] & 0xff) | ((res[1] << 8) & 0xff00) | ((res[2] << 24) >>> 8) | (res[3] << 24);
+    }
 }
