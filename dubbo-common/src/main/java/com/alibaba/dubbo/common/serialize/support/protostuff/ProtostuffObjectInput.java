@@ -56,8 +56,9 @@ public class ProtostuffObjectInput implements ObjectInput {
 
     @Override
     public byte readByte() throws IOException {
-        byte b = (byte) input.readInt32();
+//        byte b = (byte) input.readInt32();
 //        byte b = ProtoUtils.fromBytes(bytes);
+        byte b = byteBuffer.get();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readByte数据是=[{}].", b);
         }
@@ -66,8 +67,9 @@ public class ProtostuffObjectInput implements ObjectInput {
 
     @Override
     public short readShort() throws IOException {
-        short s = (short) input.readInt32();
+//        short s = (short) input.readInt32();
 //        short s = fromBytes(bytes);
+        short s = byteBuffer.getShort();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readShort数据是=[{}].", s);
         }
@@ -93,8 +95,9 @@ public class ProtostuffObjectInput implements ObjectInput {
 
     @Override
     public long readLong() throws IOException {
-        long l = input.readInt64();
+//        long l = input.readInt64();
 //        long l = fromBytes(bytes);
+        long l = byteBuffer.getLong();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readLong数据是=[{}].", l);
         }
@@ -104,7 +107,8 @@ public class ProtostuffObjectInput implements ObjectInput {
     @Override
     public float readFloat() throws IOException {
 //        float f = fromBytes(bytes);
-        float f = input.readFloat();
+//        float f = input.readFloat();
+        float f = byteBuffer.getFloat();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readFloat数据是=[{}].", f);
         }
@@ -114,7 +118,8 @@ public class ProtostuffObjectInput implements ObjectInput {
     @Override
     public double readDouble() throws IOException {
 //        double d = fromBytes(bytes);
-        double d = input.readDouble();
+//        double d = input.readDouble();
+        double d = byteBuffer.getDouble();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readDouble数据是=[{}].", d);
         }
@@ -143,6 +148,7 @@ public class ProtostuffObjectInput implements ObjectInput {
         int len = getLength(lendst);
         byte[] strdst = new byte[len];
         byteBuffer.get(strdst, 0, len); // 不需要偏移量，已经读过了
+
         return new String(strdst);
 //        byte b = byteBuffer.get();
 //        if (b == 12) {
@@ -165,8 +171,8 @@ public class ProtostuffObjectInput implements ObjectInput {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readBytes，数据原样返回.");
         }
-        return input.readByteArray();
-//        return bytes;
+//        return input.readByteArray();
+        return bytes;
     }
 
     private byte[] getBytes() {
@@ -188,7 +194,14 @@ public class ProtostuffObjectInput implements ObjectInput {
 //        byteBuffer.get(strdst, 0, len); // 不需要偏移量，已经读过了
 //        return strdst;
 
-        return byteBuffer.array();
+        int pos = byteBuffer.position();
+        int cap = byteBuffer.capacity();
+        int len = cap - pos;
+        byte[] dst = new byte[len];
+        byteBuffer.get(dst, 0, len);
+
+        return dst;
+//        return byteBuffer.array(); // array 是返回整个 buffer的内容
     }
 
     @Override
@@ -199,6 +212,14 @@ public class ProtostuffObjectInput implements ObjectInput {
             }
             return null;
         }
+        // 这个是心跳的
+        if (bytes.length == 2 && bytes[0] == 13) {
+            if (bytes[1] == 1) {
+                return true;
+            }
+            return false;
+        }
+
         Object o = fromBytes(getBytes());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readObject，数据类型是=[{}].", o.getClass().getName());
@@ -211,9 +232,17 @@ public class ProtostuffObjectInput implements ObjectInput {
 
     @Override
     public <T> T readObject(Class<T> cls) throws IOException, ClassNotFoundException {
+        if (bytes == null || bytes.length == 0) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("readObject(class)，数据为空，返回null.");
+            }
+            return null;
+        }
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readObject(class)，数据类型是=[{}].", cls.getName());
         }
+
         T t = fromBytes(getBytes()); // 这里会有Map，序列化接口的信息
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readObject(class)，数据是=[{}].", t);
