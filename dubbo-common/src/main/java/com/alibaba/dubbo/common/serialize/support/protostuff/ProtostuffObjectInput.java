@@ -166,9 +166,13 @@ public class ProtostuffObjectInput implements ObjectInput {
 
         Object o = fromBytes(getBytes());
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("readObject，数据类型是=[{}].", o.getClass().getName());
-            if (o instanceof HashMap) {
-                LOGGER.debug("readObject，HashMap数据是=[{}].", o);
+            if (o != null) {
+                LOGGER.debug("readObject，数据类型是=[{}].", o.getClass().getName());
+                if (o instanceof HashMap) {
+                    LOGGER.debug("readObject，HashMap数据是=[{}].", o);
+                }
+            } else {
+                LOGGER.debug("readObject，反序列化后数据是=[null].");
             }
         }
         return o;
@@ -189,9 +193,13 @@ public class ProtostuffObjectInput implements ObjectInput {
 
         T t = fromBytes(getBytes()); // 这里会有Map，序列化接口的信息
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("readObject(class)，数据是=[{}].", t);
-            if (t instanceof HashMap) {
-                LOGGER.debug("readObject(class)，HashMap数据是=[{}].", t);
+            if (t != null) {
+                LOGGER.debug("readObject(class)，反序列化后数据是=[{}].", t);
+                if (t instanceof HashMap) {
+                    LOGGER.debug("readObject(class)，HashMap数据是=[{}].", t);
+                }
+            } else {
+                LOGGER.debug("readObject(class)，反序列化后数据是=[null].");
             }
         }
         return t;
