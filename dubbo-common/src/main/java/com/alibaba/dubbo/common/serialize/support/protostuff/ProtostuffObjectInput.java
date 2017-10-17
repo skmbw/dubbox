@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 
 import static com.alibaba.dubbo.common.serialize.support.protostuff.ProtoUtils.fromBytes;
 
@@ -130,6 +131,9 @@ public class ProtostuffObjectInput implements ObjectInput {
         Object o = fromBytes(bytes);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readObject，数据类型是=[{}].", o.getClass().getName());
+            if (o instanceof HashMap) {
+                LOGGER.debug("readObject，HashMap数据是=[{}].", o);
+            }
         }
         return o;
     }
@@ -137,17 +141,23 @@ public class ProtostuffObjectInput implements ObjectInput {
     @Override
     public <T> T readObject(Class<T> cls) throws IOException, ClassNotFoundException {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("readObject，数据类型是=[{}].", cls.getName());
+            LOGGER.debug("readObject(class)，数据类型是=[{}].", cls.getName());
         }
         T t = fromBytes(bytes); // 这里会有Map，序列化接口的信息
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("readObject，数据是=[{}].", t);
+            LOGGER.debug("readObject(class)，数据是=[{}].", t);
+            if (t instanceof HashMap) {
+                LOGGER.debug("readObject(class)，HashMap数据是=[{}].", t);
+            }
         }
         return t;
     }
 
     @Override
     public <T> T readObject(Class<T> cls, Type type) throws IOException, ClassNotFoundException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("readObject(class, type)，数据类型type是=[{}].", type.getTypeName());
+        }
         return readObject(cls);
     }
 }

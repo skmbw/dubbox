@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 
 /**
  * 基于protostuff的序列化
@@ -133,10 +134,14 @@ public class ProtostuffObjectOutput implements ObjectOutput {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("writeObject 数据为空.");
             }
+            output.write(1);
             return;
         }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("writeObject 数据类型是=[{}].", obj.getClass().getName());
+            if (obj instanceof HashMap) {
+                LOGGER.debug("readObject，HashMap数据是=[{}].", obj);
+            }
         }
         byte[] result = ProtoUtils.toBytes(obj);
         if (LOGGER.isDebugEnabled()) {
