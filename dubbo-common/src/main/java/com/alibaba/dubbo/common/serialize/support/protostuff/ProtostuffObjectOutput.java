@@ -1,11 +1,9 @@
 package com.alibaba.dubbo.common.serialize.support.protostuff;
 
 import com.alibaba.dubbo.common.serialize.ObjectOutput;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -150,10 +148,10 @@ public class ProtostuffObjectOutput implements ObjectOutput {
         }
         byte[] result = ProtoUtils.toBytes(obj);
         if (LOGGER.isDebugEnabled()) {
-            FileOutputStream fos = new FileOutputStream("d:\\fosp_write.p");
-            fos.write(result);
-            fos.flush();
-            IOUtils.closeQuietly(fos);
+//            FileOutputStream fos = new FileOutputStream("d:\\fosp_write.p");
+//            fos.write(result);
+//            fos.flush();
+//            IOUtils.closeQuietly(fos);
             LOGGER.debug("writeObject 序列化后，数据长度是=[{}]，第一个字节是=[{}].", result.length, result[0]);
         }
         output.write(result);

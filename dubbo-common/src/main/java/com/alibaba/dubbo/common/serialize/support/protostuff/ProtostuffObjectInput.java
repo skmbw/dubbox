@@ -5,7 +5,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -206,16 +205,16 @@ public class ProtostuffObjectInput implements ObjectInput {
         byte[] dst = new byte[len];
         byteBuffer.get(dst, 0, len);
 
-        if (LOGGER.isDebugEnabled()) {
-            try {
-                FileOutputStream fos = new FileOutputStream("d:\\fosp_read.p");
-                fos.write(dst);
-                fos.flush();
-                IOUtils.closeQuietly(fos);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        if (LOGGER.isDebugEnabled()) {
+//            try {
+//                FileOutputStream fos = new FileOutputStream("d:\\fosp_read.p");
+//                fos.write(dst);
+//                fos.flush();
+//                IOUtils.closeQuietly(fos);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
         return dst;
 //        return byteBuffer.array(); // array 是返回整个 buffer的内容
     }
