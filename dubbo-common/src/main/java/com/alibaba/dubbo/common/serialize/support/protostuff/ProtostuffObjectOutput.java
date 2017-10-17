@@ -146,7 +146,13 @@ public class ProtostuffObjectOutput implements ObjectOutput {
                 LOGGER.debug("readObject，HashMap数据是=[{}].", obj);
             }
         }
-        byte[] result = ProtoUtils.toBytes(obj);
+        byte[] result;
+        // 返回Collections.emptyList出现的
+        if (obj instanceof NullPointerException) { // NullPointerException里面是一个循环引用
+            result = ProtoUtils.toBytes(obj.getClass().getName());
+        } else {
+            result = ProtoUtils.toBytes(obj);
+        }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("writeObject 序列化后，数据长度是=[{}]，第一个字节是=[{}].", result.length, result[0]);
         }
