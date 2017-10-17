@@ -66,49 +66,30 @@ public class ProtoUtils {
 			return build(bytes, clazz, 3);
 		} else if (object instanceof Number) {
 			bytes = object.toString().getBytes(UTF8);
-//			int byteLength = bytes.length;
-//			byte[] destBytes = new byte[byteLength + 1];
-//			byte[] destBytes = new byte[1];
-
-			int type = 0;
+			int type;
 			if (object instanceof Integer) {
-//				destBytes[0] = 4;
 				type = 4;
 			} else if (object instanceof Long) {
-//				destBytes[0] = 5;
 				type = 5;
 			} else if (object instanceof Double) {
-//				destBytes[0] = 6;
 				type = 6;
 			} else if (object instanceof BigInteger) {
-//				destBytes[0] = 7;
 				type = 7;
 			} else if (object instanceof BigDecimal) {
-//				destBytes[0] = 8;
 				type = 8;
 			} else if (object instanceof Byte) {
-//				destBytes[0] = 9;
 				type = 9;
 			} else if (object instanceof Float) {
-//				destBytes[0] = 10;
 				type = 10;
 			} else if (object instanceof Short) {
-//				destBytes[0] = 11;
 				type = 11;
 			} else {
 				throw new RuntimeException("不支持的数字类型:[" + object.getClass().getName());
 			}
-//			System.arraycopy(bytes, 0, destBytes, 1, byteLength);
-//			return destBytes;
 			return build(bytes, type);
 		} else if (object instanceof String) {
 			bytes = object.toString().getBytes(UTF8);
 
-//			int byteLength = bytes.length;
-//			byte[] destBytes = new byte[byteLength + 1];
-//			destBytes[0] = 12;
-//			System.arraycopy(bytes, 0, destBytes, 1, byteLength);
-//			return destBytes;
 			return build(bytes, 12);
 		} else if (object instanceof Boolean) {
 			byte[] destBytes = new byte[2];
@@ -203,39 +184,30 @@ public class ProtoUtils {
 			// 处理基本类型，protobuf处理基本类型慢
 			switch (type) { // switch比if else快很多
 				case 4:
-//					String args = new String(bytes, 1, byteLength - 1, UTF8);
 					Integer i = new Integer(args);
 					return (T) i;
 				case 5:
-//					args = new String(bytes, 1, byteLength - 1, UTF8);
 					Long l = new Long(args);
 					return (T) l;
 				case 6:
-//					args = new String(bytes, 1, byteLength - 1, UTF8);
 					Double d = new Double(args);
 					return (T) d;
 				case 7:
-//					args = new String(bytes, 1, byteLength - 1, UTF8);
 					BigInteger bi = new BigInteger(args);
 					return (T) bi;
 				case 8:
-//					args = new String(bytes, 1, byteLength - 1, UTF8);
 					BigDecimal bd = new BigDecimal(args);
 					return (T) bd;
 				case 9:
-//					args = new String(bytes, 1, byteLength - 1, UTF8);
 					Byte b = new Byte(args);
 					return (T) b;
 				case 10:
-//					args = new String(bytes, 1, byteLength - 1, UTF8);
 					Float f = new Float(args);
 					return (T) f;
 				case 11:
-//					args = new String(bytes, 1, byteLength - 1, UTF8);
 					Short s = new Short(args);
 					return (T) s;
 				case 12:
-//					args = new String(bytes, 1, byteLength - 1, UTF8);
 					return (T) args;
 				case 13:
 					byte bb = bytes[1];
