@@ -1,4 +1,4 @@
-package com.alibaba.dubbo.common.serialize.support.protostuff;
+package com.alibaba.dubbo.common.utils;
 
 import java.nio.ByteBuffer;
 
@@ -19,5 +19,6 @@ public class ByteBufferTest {
 
         byte b = byteBuffer.get();
         System.out.println(b);
+
     }
 }
