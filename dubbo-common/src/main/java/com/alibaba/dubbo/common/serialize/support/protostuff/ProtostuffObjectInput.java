@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -70,7 +71,8 @@ public class ProtostuffObjectInput implements ObjectInput {
     public short readShort() throws IOException {
 //        short s = (short) input.readInt32();
 //        short s = fromBytes(bytes);
-        short s = byteBuffer.getShort();
+//        short s = byteBuffer.getShort();
+        short s = Short.parseShort(readString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readShort数据是=[{}].", s);
         }
@@ -98,7 +100,8 @@ public class ProtostuffObjectInput implements ObjectInput {
     public long readLong() throws IOException {
 //        long l = input.readInt64();
 //        long l = fromBytes(bytes);
-        long l = byteBuffer.getLong();
+//        long l = byteBuffer.getLong();
+        long l = Long.parseLong(readString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readLong数据是=[{}].", l);
         }
@@ -109,7 +112,8 @@ public class ProtostuffObjectInput implements ObjectInput {
     public float readFloat() throws IOException {
 //        float f = fromBytes(bytes);
 //        float f = input.readFloat();
-        float f = byteBuffer.getFloat();
+//        float f = byteBuffer.getFloat();
+        float f = Float.parseFloat(readString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readFloat数据是=[{}].", f);
         }
@@ -120,7 +124,8 @@ public class ProtostuffObjectInput implements ObjectInput {
     public double readDouble() throws IOException {
 //        double d = fromBytes(bytes);
 //        double d = input.readDouble();
-        double d = byteBuffer.getDouble();
+//        double d = byteBuffer.getDouble();
+        double d = Double.parseDouble(readString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readDouble数据是=[{}].", d);
         }
@@ -201,6 +206,16 @@ public class ProtostuffObjectInput implements ObjectInput {
         byte[] dst = new byte[len];
         byteBuffer.get(dst, 0, len);
 
+        if (LOGGER.isDebugEnabled()) {
+            try {
+                FileOutputStream fos = new FileOutputStream("d:\\fosp_read.p");
+                fos.write(dst);
+                fos.flush();
+                IOUtils.closeQuietly(fos);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return dst;
 //        return byteBuffer.array(); // array 是返回整个 buffer的内容
     }

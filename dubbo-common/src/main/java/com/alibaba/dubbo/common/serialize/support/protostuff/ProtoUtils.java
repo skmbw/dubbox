@@ -26,107 +26,6 @@ public class ProtoUtils {
 	/**
 	 * 将对象序列化成字节数组
 	 * @param object 要被序列化的对象
-	 * @param type 对象类型
-	 * @return 序列化后的字节数组
-	 */
-	@SuppressWarnings("unchecked")
-	public static byte[] toBytes(Object object, int type) {
-		return toBytes(object);
-//		if (object == null) {
-//			return null;
-//		}
-//
-//		byte[] bytes;
-//		if (type >= 4) {
-//			bytes = object.toString().getBytes(UTF8);
-//			int byteLength = bytes.length;
-//			byte[] destBytes = new byte[byteLength + 1];
-//			switch (type) {
-//				case 4:
-//					destBytes[0] = 4;
-//					break;
-//				case 5:
-//					destBytes[0] = 5;
-//					break;
-//				case 6:
-//					destBytes[0] = 6;
-//					break;
-//				case 7:
-//					destBytes[0] = 7;
-//					break;
-//				case 8:
-//					destBytes[0] = 8;
-//					break;
-//				case 9:
-//					destBytes[0] = 9;
-//					break;
-//				case 10:
-//					destBytes[0] = 10;
-//					break;
-//				case 11:
-//					destBytes[0] = 11;
-//					break;
-//				case 12:
-//					destBytes[0] = 12;
-//					break;
-//				case 13:
-//					destBytes = new byte[2];
-//					destBytes[0] = 12;
-//					Boolean bool = (Boolean) object;
-//					if (bool) {
-//						destBytes[1] = 1;
-//					}
-//					return destBytes;
-//				default: // 非基本类型
-//					break;
-//			}
-//			System.arraycopy(bytes, 0, destBytes, 1, byteLength);
-//			return destBytes;
-//		}
-//
-//		Class<Object> clazz;
-//		if (object instanceof List) {
-//			List<Object> list = (List<Object>) object;
-//			if (list.isEmpty()) {
-//				return null;
-//			}
-//			clazz = (Class<Object>) list.get(0).getClass();
-//
-//			bytes = collectToBytes(clazz, list);
-//
-//			return build(bytes, clazz, 1);
-//		} else if (object instanceof Set) {
-//			Set<Object> set = (Set<Object>) object;
-//			if (set.isEmpty()) {
-//				return null;
-//			}
-//			clazz = (Class<Object>) set.iterator().next().getClass();
-//
-//			bytes = collectToBytes(clazz, set);
-//
-//			return build(bytes, clazz, 2);
-//		} else if (object instanceof Map) {
-//			Map<String, Object> map = (Map<String, Object>) object;
-//			if (map.isEmpty()) {
-//				return null;
-//			}
-//			clazz = (Class<Object>) map.values().iterator().next().getClass();
-//			bytes = mapToBytes(clazz, map);
-//
-//			return build(bytes, clazz, 3);
-//		} else {
-//			clazz = (Class<Object>) object.getClass();
-//			Schema<Object> schema = RuntimeSchema.getSchema(clazz);
-//			LinkedBuffer buffer = LinkedBuffer.allocate();
-//			bytes = ProtobufIOUtil.toByteArray(object, schema, buffer);
-//
-//			return build(bytes, clazz, 0);
-//		}
-	}
-
-	/**
-	 * 将对象序列化成字节数组
-	 * @param object 要被序列化的对象
 	 * @return 序列化后的字节数组
 	 */
 	@SuppressWarnings("unchecked")
@@ -169,32 +68,32 @@ public class ProtoUtils {
 			bytes = object.toString().getBytes(UTF8);
 //			int byteLength = bytes.length;
 //			byte[] destBytes = new byte[byteLength + 1];
-			byte[] destBytes = new byte[1];
+//			byte[] destBytes = new byte[1];
 
 			int type = 0;
 			if (object instanceof Integer) {
-				destBytes[0] = 4;
+//				destBytes[0] = 4;
 				type = 4;
 			} else if (object instanceof Long) {
-				destBytes[0] = 5;
+//				destBytes[0] = 5;
 				type = 5;
 			} else if (object instanceof Double) {
-				destBytes[0] = 6;
+//				destBytes[0] = 6;
 				type = 6;
 			} else if (object instanceof BigInteger) {
-				destBytes[0] = 7;
+//				destBytes[0] = 7;
 				type = 7;
 			} else if (object instanceof BigDecimal) {
-				destBytes[0] = 8;
+//				destBytes[0] = 8;
 				type = 8;
 			} else if (object instanceof Byte) {
-				destBytes[0] = 9;
+//				destBytes[0] = 9;
 				type = 9;
 			} else if (object instanceof Float) {
-				destBytes[0] = 10;
+//				destBytes[0] = 10;
 				type = 10;
 			} else if (object instanceof Short) {
-				destBytes[0] = 11;
+//				destBytes[0] = 11;
 				type = 11;
 			} else {
 				throw new RuntimeException("不支持的数字类型:[" + object.getClass().getName());
