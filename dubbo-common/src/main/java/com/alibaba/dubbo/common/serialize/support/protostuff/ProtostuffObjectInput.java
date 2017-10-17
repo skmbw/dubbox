@@ -1,7 +1,6 @@
 package com.alibaba.dubbo.common.serialize.support.protostuff;
 
 import com.alibaba.dubbo.common.serialize.ObjectInput;
-import io.protostuff.ByteArrayInput;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,7 @@ public class ProtostuffObjectInput implements ObjectInput {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtostuffObjectInput.class);
 
     private byte[] bytes;
-    private ByteArrayInput input;
+//    private ByteArrayInput input;
     private ByteBuffer byteBuffer;
 
     public ProtostuffObjectInput(InputStream inputStream) {
@@ -36,7 +35,7 @@ public class ProtostuffObjectInput implements ObjectInput {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("数据长度是=[{}].", bytes.length);
             }
-            input = new ByteArrayInput(bytes, false);
+//            input = new ByteArrayInput(bytes, false);
         } catch (IOException e) {
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error("Protostuff convert to byte[] error, msg=[{}].",
@@ -47,7 +46,8 @@ public class ProtostuffObjectInput implements ObjectInput {
 
     @Override
     public boolean readBool() throws IOException {
-        boolean b = input.readBool(); //fromBytes(bytes);
+//        boolean b = input.readBool(); //fromBytes(bytes);
+        boolean b = bytes != null && bytes[0] != 0;
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readBool数据是=[{}].", b);
         }
@@ -58,7 +58,7 @@ public class ProtostuffObjectInput implements ObjectInput {
     public byte readByte() throws IOException {
 //        byte b = (byte) input.readInt32();
 //        byte b = ProtoUtils.fromBytes(bytes);
-        byte b = byteBuffer.get();
+        byte b = bytes[bytes.length - 1];
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readByte数据是=[{}].", b);
         }
