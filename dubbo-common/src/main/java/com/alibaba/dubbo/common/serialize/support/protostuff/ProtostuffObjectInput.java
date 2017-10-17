@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 
+import static com.alibaba.dubbo.common.serialize.support.protostuff.ProtoUtils.fromBytes;
+
 /**
  * 基于Protostuff的，对象反序列化。
  *
@@ -24,6 +26,9 @@ public class ProtostuffObjectInput implements ObjectInput {
     public ProtostuffObjectInput(InputStream inputStream) {
         try {
             bytes = IOUtils.toByteArray(inputStream);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("数据长度是=[{}].", bytes.length);
+            }
         } catch (IOException e) {
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error("Protostuff convert to byte[] error, msg=[{}].",
@@ -34,64 +39,111 @@ public class ProtostuffObjectInput implements ObjectInput {
 
     @Override
     public boolean readBool() throws IOException {
-        return ProtoUtils.fromBytes(bytes);
+        return fromBytes(bytes);
     }
 
     @Override
     public byte readByte() throws IOException {
-        return ProtoUtils.fromBytes(bytes);
+        byte b = ProtoUtils.fromBytes(bytes);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("readByte数据是=[{}].", b);
+        }
+        return b;
     }
 
     @Override
     public short readShort() throws IOException {
-        return ProtoUtils.fromBytes(bytes);
+        short s = fromBytes(bytes);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("readShort数据是=[{}].", s);
+        }
+        return s;
     }
 
     @Override
     public int readInt() throws IOException {
+        int i;
         try {
-            return ProtoUtils.fromBytes(bytes);
+            i = fromBytes(bytes);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("readInt数据是=[{}].", i);
+            }
         } catch (ClassCastException e) {
-            return 1; // version
+            LOGGER.error("readInt转型错误，返回1。", e);
+            i = 1; // version
         }
+        return i;
     }
 
     @Override
     public long readLong() throws IOException {
-        return ProtoUtils.fromBytes(bytes);
+        long l = fromBytes(bytes);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("readLong数据是=[{}].", l);
+        }
+        return l;
     }
 
     @Override
     public float readFloat() throws IOException {
-        return ProtoUtils.fromBytes(bytes);
+        float f = fromBytes(bytes);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("readFloat数据是=[{}].", f);
+        }
+        return f;
     }
 
     @Override
     public double readDouble() throws IOException {
-        return ProtoUtils.fromBytes(bytes);
+        double d = fromBytes(bytes);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("readDouble数据是=[{}].", d);
+        }
+        return d;
     }
 
     @Override
     public String readUTF() throws IOException {
-        return ProtoUtils.fromBytes(bytes);
+        String s = fromBytes(bytes);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("readUTF数据是=[{}].", s);
+        }
+        return s;
     }
 
     @Override
     public byte[] readBytes() throws IOException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("readBytes，数据原样返回.");
+        }
         return bytes;
     }
 
     @Override
     public Object readObject() throws IOException, ClassNotFoundException {
         if (bytes == null || bytes.length == 0) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("readObject，数据为空，返回null.");
+            }
             return null;
         }
-        return ProtoUtils.fromBytes(bytes);
+        Object o = fromBytes(bytes);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("readObject，数据类型是=[{}].", o.getClass().getName());
+        }
+        return o;
     }
 
     @Override
     public <T> T readObject(Class<T> cls) throws IOException, ClassNotFoundException {
-        return ProtoUtils.fromBytes(bytes); // 这里会有Map，序列化接口的信息
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("readObject，数据类型是=[{}].", cls.getName());
+        }
+        T t = fromBytes(bytes); // 这里会有Map，序列化接口的信息
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("readObject，数据是=[{}].", t);
+        }
+        return t;
     }
 
     @Override
