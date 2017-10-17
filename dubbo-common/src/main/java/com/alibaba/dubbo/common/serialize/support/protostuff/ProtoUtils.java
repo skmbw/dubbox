@@ -384,7 +384,7 @@ public class ProtoUtils {
 		}
 	}
 
-	private static int getLength(byte[] res) {
+	public static int getLength(byte[] res) {
 		return (res[1] & 0xff) | ((res[2] << 8) & 0xff00) | ((res[3] << 24) >>> 8) | (res[4] << 24);
 	}
 }

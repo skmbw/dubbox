@@ -45,7 +45,7 @@ public class ProtostuffObjectOutput implements ObjectOutput {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("writeShort，数据是=[{}].", v);
         }
-        output.write(ProtoUtils.toBytes(v, 11));
+        output.write(ProtoUtils.toBytes(v));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ProtostuffObjectOutput implements ObjectOutput {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("writeInt，数据是=[{}].", v);
         }
-        output.write(ProtoUtils.toBytes(v, 4));
+        output.write(ProtoUtils.toBytes(v));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ProtostuffObjectOutput implements ObjectOutput {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("writeLong，数据是=[{}].", v);
         }
-        output.write(ProtoUtils.toBytes(v, 5));
+        output.write(ProtoUtils.toBytes(v));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ProtostuffObjectOutput implements ObjectOutput {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("writeFloat，数据是=[{}].", v);
         }
-        output.write(ProtoUtils.toBytes(v, 10));
+        output.write(ProtoUtils.toBytes(v));
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ProtostuffObjectOutput implements ObjectOutput {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("writeDouble，数据是=[{}].", v);
         }
-        output.write(ProtoUtils.toBytes(v, 6));
+        output.write(ProtoUtils.toBytes(v));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ProtostuffObjectOutput implements ObjectOutput {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("writeUTF，数据是=[{}].", v);
         }
-        output.write(ProtoUtils.toBytes(v, 12));
+        output.write(ProtoUtils.toBytes(v));
     }
 
     @Override
@@ -132,9 +132,12 @@ public class ProtostuffObjectOutput implements ObjectOutput {
     public void writeObject(Object obj) throws IOException {
         if (obj == null) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("writeObject 数据为空.");
+                LOGGER.debug("writeObject 数据为空，将写入1心跳.");
             }
-            output.write(1);
+            byte[] heart = new byte[2];
+            heart[0] = 13; // boolean
+            heart[1] = 1;
+            output.write(heart);
             return;
         }
         if (LOGGER.isDebugEnabled()) {
