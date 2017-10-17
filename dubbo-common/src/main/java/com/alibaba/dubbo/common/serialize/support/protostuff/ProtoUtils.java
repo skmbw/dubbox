@@ -37,7 +37,7 @@ public class ProtoUtils {
 		Class<Object> clazz;
 		if (object instanceof List) {
 			List<Object> list = (List<Object>) object;
-			if (list.size() == 0) {
+			if (list.isEmpty()) {
 				return null;
 			}
 			clazz = (Class<Object>) list.get(0).getClass();
@@ -47,7 +47,7 @@ public class ProtoUtils {
 			return build(bytes, clazz, 1);
 		} else if (object instanceof Set) {
 			Set<Object> set = (Set<Object>) object;
-			if (set.size() == 0) {
+			if (set.isEmpty()) {
 				return null;
 			}
 			clazz = (Class<Object>) set.iterator().next().getClass();
@@ -57,7 +57,7 @@ public class ProtoUtils {
 			return build(bytes, clazz, 2);
 		} else if (object instanceof Map) {
 			Map<String, Object> map = (Map<String, Object>) object;
-			if (map.size() == 0) {
+			if (map.isEmpty()) {
 				return null;
 			}
 			clazz = (Class<Object>) map.values().iterator().next().getClass();
