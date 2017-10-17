@@ -121,7 +121,7 @@ public class ProtoUtils {
 			clazz = (Class<Object>) object.getClass();
 			Schema<Object> schema = RuntimeSchema.getSchema(clazz);
 			LinkedBuffer buffer = LinkedBuffer.allocate();
-			bytes = ProtobufIOUtil.toByteArray(object, schema, buffer);
+			bytes = ProtostuffIOUtil.toByteArray(object, schema, buffer);
 
 			return build(bytes, clazz, 0);
 		}
@@ -131,14 +131,14 @@ public class ProtoUtils {
 		Schema<Object> schema = RuntimeSchema.getSchema(clazz);
 		StringMapSchema<Object> collectionSchema = new StringMapSchema<>(schema);
 		LinkedBuffer buffer = LinkedBuffer.allocate(1024);
-		return ProtobufIOUtil.toByteArray(map, collectionSchema, buffer);
+		return ProtostuffIOUtil.toByteArray(map, collectionSchema, buffer);
 	}
 
 	private static byte[] collectToBytes(Class<Object> clazz, Collection<Object> list) {
 		Schema<Object> schema = RuntimeSchema.getSchema(clazz);
 		MessageCollectionSchema<Object> collectionSchema = new MessageCollectionSchema<>(schema);
 		LinkedBuffer buffer = LinkedBuffer.allocate(1024);
-		return ProtobufIOUtil.toByteArray(list, collectionSchema, buffer);
+		return ProtostuffIOUtil.toByteArray(list, collectionSchema, buffer);
 	}
 
 	public static byte[] build(byte[] bytes, Class<Object> clazz, int type) {
@@ -265,22 +265,22 @@ public class ProtoUtils {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				ProtobufIOUtil.mergeFrom(bytes, offset, destLength, entity, schema);
+				ProtostuffIOUtil.mergeFrom(bytes, offset, destLength, entity, schema);
 				return (T) entity;
 			case 1:
 				MessageCollectionSchema<Object> collectionSchema = new MessageCollectionSchema<>(schema);
 				List<Object> list = new ArrayList<>();
-				ProtobufIOUtil.mergeFrom(bytes, offset, destLength, list, collectionSchema);
+				ProtostuffIOUtil.mergeFrom(bytes, offset, destLength, list, collectionSchema);
 				return (T) list;
 			case 2:
 				collectionSchema = new MessageCollectionSchema<>(schema);
 				Set<Object> set = new HashSet<>();
-				ProtobufIOUtil.mergeFrom(bytes, offset, destLength, set, collectionSchema);
+				ProtostuffIOUtil.mergeFrom(bytes, offset, destLength, set, collectionSchema);
 				return (T) set;
 			case 3:
 				StringMapSchema<Object> stringSchema = new StringMapSchema<>(schema);
 				Map<String, Object> map = new HashMap<>();
-				ProtobufIOUtil.mergeFrom(bytes, offset, destLength, map, stringSchema);
+				ProtostuffIOUtil.mergeFrom(bytes, offset, destLength, map, stringSchema);
 				return (T) map;
 			default:
 				throw new RuntimeException("未知类型protos：" + type);
