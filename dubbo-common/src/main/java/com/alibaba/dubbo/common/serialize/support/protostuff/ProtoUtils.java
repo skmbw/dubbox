@@ -294,9 +294,13 @@ public class ProtoUtils {
 
 		int byteLength = bytes.length;
 		int type = bytes[0];
-		int length = getLength(bytes);
-		if (type >= 4) {
-			String args = new String(bytes, 5, length, UTF8);
+		if (4 <= type && type <= 13) {
+			int length;
+			String args = null;
+			if (type != 13) {
+				length = getLength(bytes);
+				args = new String(bytes, 5, length, UTF8);
+			}
 			// 处理基本类型，protobuf处理基本类型慢
 			switch (type) { // switch比if else快很多
 				case 4:
@@ -346,7 +350,7 @@ public class ProtoUtils {
 			}
 		}
 
-//		int length = getLength(bytes);
+		int length = getLength(bytes);
 		String className = new String(bytes, 5, length, UTF8);
 		Class clazz = ClassUtils.forName(className);
 		Schema schema = RuntimeSchema.getSchema(clazz);

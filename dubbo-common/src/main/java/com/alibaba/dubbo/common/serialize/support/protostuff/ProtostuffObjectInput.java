@@ -170,23 +170,25 @@ public class ProtostuffObjectInput implements ObjectInput {
     }
 
     private byte[] getBytes() {
-        byte b = byteBuffer.get();
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("getBytes()，首字节是=[{}].", b);
-        }
-        if (b == 13) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("getBytes()，首字节是=[13], maybe is heartbeat.");
-            }
-            return bytes;
-        }
+//        byte b = byteBuffer.get();
+//        if (LOGGER.isDebugEnabled()) {
+//            LOGGER.debug("getBytes()，首字节是=[{}].", b);
+//        }
+//        if (b == 13) {
+//            if (LOGGER.isDebugEnabled()) {
+//                LOGGER.debug("getBytes()，首字节是=[13], maybe is heartbeat.");
+//            }
+//            return bytes;
+//        }
+//
+//        byte[] lendst = new byte[4];
+//        byteBuffer.get(lendst, 0, 4); // 不需要偏移量，已经读过了
+//        int len = getLength(lendst);
+//        byte[] strdst = new byte[len];
+//        byteBuffer.get(strdst, 0, len); // 不需要偏移量，已经读过了
+//        return strdst;
 
-        byte[] lendst = new byte[4];
-        byteBuffer.get(lendst, 0, 4); // 不需要偏移量，已经读过了
-        int len = getLength(lendst);
-        byte[] strdst = new byte[len];
-        byteBuffer.get(strdst, 0, len); // 不需要偏移量，已经读过了
-        return strdst;
+        return byteBuffer.array();
     }
 
     @Override
