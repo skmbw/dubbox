@@ -58,7 +58,8 @@ public class ProtostuffObjectInput implements ObjectInput {
     public byte readByte() throws IOException {
 //        byte b = (byte) input.readInt32();
 //        byte b = ProtoUtils.fromBytes(bytes);
-        byte b = bytes[bytes.length - 1];
+//        byte b = bytes[bytes.length - 1];
+        byte b = Byte.parseByte(readString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readByte数据是=[{}].", b);
         }
