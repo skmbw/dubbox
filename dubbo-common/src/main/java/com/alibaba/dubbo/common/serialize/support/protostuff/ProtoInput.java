@@ -35,36 +35,43 @@ public class ProtoInput implements ObjectInput {
 
     @Override
     public boolean readBool() throws IOException {
+        byteBuffer.get();
         return byteBuffer.get() != 0;
     }
 
     @Override
     public byte readByte() throws IOException {
+        byteBuffer.get();
         return byteBuffer.get();
     }
 
     @Override
     public short readShort() throws IOException {
+        byteBuffer.get();
         return byteBuffer.getShort();
     }
 
     @Override
     public int readInt() throws IOException {
+        byteBuffer.get();
         return byteBuffer.getInt();
     }
 
     @Override
     public long readLong() throws IOException {
+        byteBuffer.get();
         return byteBuffer.getInt();
     }
 
     @Override
     public float readFloat() throws IOException {
+        byteBuffer.get();
         return byteBuffer.getFloat();
     }
 
     @Override
     public double readDouble() throws IOException {
+        byteBuffer.get();
         return byteBuffer.getDouble();
     }
 
@@ -75,6 +82,10 @@ public class ProtoInput implements ObjectInput {
             return null;
         }
 
+        return readString();
+    }
+
+    private String readString() throws IOException {
         int length = byteBuffer.getInt();
         if (length != 0) {
             byte[] data = new byte[length];
@@ -90,6 +101,10 @@ public class ProtoInput implements ObjectInput {
         if (type != 14) { // 不是byte[]
             return new byte[0];
         }
+        return getBytes();
+    }
+
+    private byte[] getBytes() throws IOException {
         int length = byteBuffer.getInt();
         if (length != 0) {
             byte[] data = new byte[length];
@@ -174,29 +189,37 @@ public class ProtoInput implements ObjectInput {
                 ProtostuffIOUtil.mergeFrom(dataBytes, map, stringSchema);
                 return map;
             case 4:
-                return readInt();
+                return byteBuffer.getInt();
+//                return readInt();
             case 5:
-                return readLong();
+//                return readLong();
+                return byteBuffer.getLong();
             case 6:
-                return readDouble();
+//                return readDouble();
+                return byteBuffer.getDouble();
             case 7:
-                String s = readUTF();
+                String s = readString();
                 return new BigInteger(s);
             case 8:
-                s = readUTF();
+                s = readString(); // 因为前面调用了get()获取了type，不想再去mark & reset
                 return new BigDecimal(s);
             case 9:
-                return readByte();
+//                return readByte();
+                return byteBuffer.get();
             case 10:
-                return readFloat();
+//                return readFloat();
+                return byteBuffer.getFloat();
             case 11:
-                return readShort();
+//                return readShort();
+                return byteBuffer.getShort();
             case 12:
-                return readUTF();
+                return readString();
             case 13:
-                return readBool();
+//                return readBool();
+                return byteBuffer.get() != 0;
             case 14:
-                return readBytes();
+//                return readBytes();
+                return getBytes();
             default:
 
         }
