@@ -1,5 +1,6 @@
 package com.alibaba.dubbo.common.utils;
 
+import com.alibaba.dubbo.common.serialize.support.protostuff.WrapArray;
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
@@ -20,11 +21,12 @@ public class ByteBufferTest {
         strArray[0] = "111";
         strArray[1] = "尹雷";
         strArray[2] = "df个";
-        Schema schema = RuntimeSchema.getSchema(String.class);
+        WrapArray wrapArray = new WrapArray(strArray);
+        Schema<WrapArray> schema = RuntimeSchema.getSchema(WrapArray.class);
 
-        byte[] str2array = ProtostuffIOUtil.toByteArray(strArray, schema, LinkedBuffer.allocate());
-        String[] strArray2 = new String[0];
-        ProtostuffIOUtil.mergeFrom(str2array, strArray2, schema);
+        byte[] str2array = ProtostuffIOUtil.toByteArray(wrapArray, schema, LinkedBuffer.allocate());
+        WrapArray wrapArray1 = new WrapArray();
+        ProtostuffIOUtil.mergeFrom(str2array, wrapArray1, schema);
 
 //        byte[] em = new byte[0];
 //        System.out.println(em.length + "" + em[0]);
