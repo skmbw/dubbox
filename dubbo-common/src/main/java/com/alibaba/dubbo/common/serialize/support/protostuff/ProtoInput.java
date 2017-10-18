@@ -133,6 +133,7 @@ public class ProtoInput implements ObjectInput {
                 int totalLength = byteBuffer.getInt();
                 int nameLength = byteBuffer.getInt();
                 byte[] nameBytes = new byte[nameLength];
+                byteBuffer.get(nameBytes);
                 String className = new String(nameBytes);
                 Class clazz = ClassUtils.forName(className);
                 Schema schema = RuntimeSchema.getSchema(clazz);
@@ -147,6 +148,7 @@ public class ProtoInput implements ObjectInput {
                 totalLength = byteBuffer.getInt();
                 nameLength = byteBuffer.getInt();
                 nameBytes = new byte[nameLength];
+                byteBuffer.get(nameBytes);
                 className = new String(nameBytes);
                 clazz = ClassUtils.forName(className);
                 schema = RuntimeSchema.getSchema(clazz);
@@ -162,6 +164,7 @@ public class ProtoInput implements ObjectInput {
                 totalLength = byteBuffer.getInt();
                 nameLength = byteBuffer.getInt();
                 nameBytes = new byte[nameLength];
+                byteBuffer.get(nameBytes);
                 className = new String(nameBytes);
                 clazz = ClassUtils.forName(className);
                 schema = RuntimeSchema.getSchema(clazz);
@@ -177,6 +180,7 @@ public class ProtoInput implements ObjectInput {
                 totalLength = byteBuffer.getInt();
                 nameLength = byteBuffer.getInt();
                 nameBytes = new byte[nameLength];
+                byteBuffer.get(nameBytes);
                 className = new String(nameBytes);
                 clazz = ClassUtils.forName(className);
                 schema = RuntimeSchema.getSchema(clazz);
@@ -204,7 +208,7 @@ public class ProtoInput implements ObjectInput {
                 s = readString(); // 因为前面调用了get()获取了type，不想再去mark & reset
                 return new BigDecimal(s);
             case 9:
-//                return readByte();
+//                return readByte(); // 标志位 不想 再重置了
                 return byteBuffer.get();
             case 10:
 //                return readFloat();
