@@ -2,10 +2,7 @@ package com.alibaba.dubbo.common.serialize.support.protostuff;
 
 import com.alibaba.dubbo.common.compiler.support.ClassUtils;
 import com.alibaba.dubbo.common.serialize.ObjectInput;
-import io.protostuff.MessageCollectionSchema;
-import io.protostuff.ProtostuffIOUtil;
-import io.protostuff.Schema;
-import io.protostuff.StringMapSchema;
+import io.protostuff.*;
 import io.protostuff.runtime.RuntimeSchema;
 import org.apache.commons.io.IOUtils;
 
@@ -149,6 +146,14 @@ public class ProtoInput implements ObjectInput {
                 return byteBuffer.get() != 0;
             case 14:
                 return getBytes();
+            case 15: // 数组
+                int length = byteBuffer.getInt();
+                byte[] data = new byte[length];
+                byteBuffer.get(data);
+                Schema<WrapArray> schema = RuntimeSchema.getSchema(WrapArray.class);
+                WrapArray wrapArray = new WrapArray();
+                ProtostuffIOUtil.mergeFrom(data, wrapArray, schema);
+                return wrapArray.getArray();
         }
 
         // 和基本类型分开，代码更整洁

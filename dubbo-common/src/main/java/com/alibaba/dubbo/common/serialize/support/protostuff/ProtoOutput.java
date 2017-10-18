@@ -251,7 +251,19 @@ public class ProtoOutput implements ObjectOutput {
             byte[] bytes = (byte[]) obj;
             writeBytes(bytes);
         } else if (obj.getClass().isArray()) {
-            throw new UnsupportedOperationException("暂时不支持数组");
+            Object[] array = (Object[]) obj;
+            // throw new UnsupportedOperationException("暂时不支持数组");
+            WrapArray wrapArray = new WrapArray(array);
+            Schema<WrapArray> schema = RuntimeSchema.getSchema(WrapArray.class);
+            LinkedBuffer buffer = LinkedBuffer.allocate(1024);
+            byte[] bytes = ProtostuffIOUtil.toByteArray(wrapArray, schema, buffer);
+
+            int length = bytes.length;
+            int totalLength = 5 + length;
+            check(totalLength);
+            byteBuffer.put((byte) 15);
+            byteBuffer.putInt(totalLength);
+            byteBuffer.put(bytes);
         } else {
             cls = obj.getClass();
             Schema schema = RuntimeSchema.getSchema(cls);
