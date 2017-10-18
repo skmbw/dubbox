@@ -1,5 +1,12 @@
 package com.alibaba.dubbo.common.utils;
 
+import io.protostuff.LinkedBuffer;
+import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
+import io.protostuff.runtime.ArraySchema;
+import io.protostuff.runtime.ArraySchemas;
+import io.protostuff.runtime.RuntimeSchema;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -9,6 +16,16 @@ import java.nio.ByteBuffer;
 public class ByteBufferTest {
 
     public static void main(String[] args) {
+        String[] strArray = new String[3];
+        strArray[0] = "111";
+        strArray[1] = "尹雷";
+        strArray[2] = "df个";
+        Schema schema = RuntimeSchema.getSchema(String.class);
+
+        byte[] str2array = ProtostuffIOUtil.toByteArray(strArray, schema, LinkedBuffer.allocate());
+        String[] strArray2 = new String[0];
+        ProtostuffIOUtil.mergeFrom(str2array, strArray2, schema);
+
 //        byte[] em = new byte[0];
 //        System.out.println(em.length + "" + em[0]);
         byte[] bs = new byte[3];
