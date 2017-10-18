@@ -120,13 +120,6 @@ public class ProtoInput implements ObjectInput {
         if (bytes == null || bytes.length == 0) {
             return null;
         }
-//        // 这个是心跳的
-//        if (bytes.length == 2 && bytes[0] == 13) {
-//            if (bytes[1] == 1) {
-//                return true;
-//            }
-//            return false;
-//        }
 
         byte type = byteBuffer.get();
         // 基本类型和复合类型在一起，导致获取数据长度有问题
@@ -160,6 +153,18 @@ public class ProtoInput implements ObjectInput {
 
         // 和基本类型分开，代码更整洁
         int totalLength = byteBuffer.getInt();
+        if (totalLength == 0) {
+            switch (type) {
+                case 0:
+                    return null;
+                case 1:
+                    return Collections.emptyList();
+                case 2:
+                    return Collections.emptySet();
+                case 3:
+                    return Collections.emptyMap();
+            }
+        }
         int nameLength = byteBuffer.getInt();
         byte[] nameBytes = new byte[nameLength];
         byteBuffer.get(nameBytes);
