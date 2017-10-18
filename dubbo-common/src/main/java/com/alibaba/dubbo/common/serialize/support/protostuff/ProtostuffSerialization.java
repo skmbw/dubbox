@@ -28,11 +28,13 @@ public class ProtostuffSerialization implements OptimizedSerialization {
 
     @Override
     public ObjectOutput serialize(URL url, OutputStream output) throws IOException {
-        return new ProtostuffObjectOutput(output);
+//        return new ProtostuffObjectOutput(output);
+        return new ProtoOutput(output);
     }
 
     @Override
     public ObjectInput deserialize(URL url, InputStream input) throws IOException {
-        return new ProtostuffObjectInput(input);
+//        return new ProtostuffObjectInput(input);
+        return new ProtoInput(input);
     }
 }

@@ -237,10 +237,14 @@ public class ProtoOutput implements ObjectOutput {
             @SuppressWarnings("unchecked")
             byte[] bytes = ProtostuffIOUtil.toByteArray(obj, schema, buffer);
             int length = bytes.length;
-            int totalLength = 1 + 4 + length;
+            byte[] nameBytes = cls.getName().getBytes();
+            int nameLength = nameBytes.length;
+            int totalLength = 9 + nameLength + length;
             check(totalLength);
             byteBuffer.put((byte) 0);
-            byteBuffer.putInt(length);
+            byteBuffer.putInt(totalLength);
+            byteBuffer.putInt(nameLength);
+            byteBuffer.put(nameBytes);
             byteBuffer.put(bytes);
         }
     }
