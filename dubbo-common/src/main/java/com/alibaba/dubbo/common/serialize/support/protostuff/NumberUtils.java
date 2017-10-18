@@ -1,6 +1,8 @@
 package com.alibaba.dubbo.common.serialize.support.protostuff;
 
 /**
+ * 基本类型和字节数组之间的转换
+ *
  * @author yinlei
  * @since 2017/10/18 12:25
  */
@@ -57,7 +59,7 @@ public class NumberUtils {
      * @param bytes 字节数组
      * @return 整型
      */
-    public static int bytesToInt(byte[] bytes) {
+    public static int byteToInt(byte[] bytes) {
         int num = bytes[0] & 0xFF;
         num |= ((bytes[1] << 8) & 0xFF00);
         num |= ((bytes[2] << 16) & 0xFF0000);
