@@ -7,6 +7,34 @@ package com.alibaba.dubbo.common.serialize.support.protostuff;
  * @since 2017/10/18 12:25
  */
 public class NumberUtils {
+
+    /**
+     * boolean转1字节数组
+     *
+     * @param bool boolean
+     * @return 1 byte array
+     */
+    public static byte[] boolToByte(boolean bool) {
+        byte[] bs = new byte[1];
+        if (bool) {
+            bs[0] = 1;
+        }
+        return bs;
+    }
+
+    /**
+     * 1字节数组转为boolean
+     *
+     * @param bytes 1字节数组
+     * @return boolean
+     */
+    public static boolean byteToBool(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) {
+            return false;
+        }
+        return bytes[0] != 0;
+    }
+
     /**
      * 短整型转2字节数组
      *
