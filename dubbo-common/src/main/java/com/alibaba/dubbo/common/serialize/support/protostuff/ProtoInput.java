@@ -61,6 +61,17 @@ public class ProtoInput implements ObjectInput {
 
     @Override
     public String readUTF() throws IOException {
+        byte type = byteBuffer.get();
+        if (type != 12) { // 不是string类型
+            return null;
+        }
+
+        int length = byteBuffer.getInt();
+        if (length != 0) {
+            byte[] data = new byte[length];
+            byteBuffer.get(data);
+            return new String(data);
+        }
         return null;
     }
 

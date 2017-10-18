@@ -77,15 +77,11 @@ public class ProtoOutput implements ObjectOutput {
         check(1);
         byteBuffer.put((byte) 12); // 数据类型
         if (v == null) {
-//            byte[] lens = NumberUtils.intToByte(0);
-//            byteBuffer.put(lens);
             check(4);
             byteBuffer.putInt(0); // 长度为0
         } else {
             byte[] bytes = v.getBytes();
             int len = bytes.length;
-//            byte[] lens = NumberUtils.intToByte(len);
-//            byteBuffer.put(lens); // 存入长度，4个字节
             check(4 + len);
             byteBuffer.putInt(len);
             byteBuffer.put(bytes); // 存入数据
@@ -97,8 +93,6 @@ public class ProtoOutput implements ObjectOutput {
         if (v == null || v.length == 0) {
             check(5);
             byteBuffer.put((byte) 14);
-//            byte[] lens = NumberUtils.intToByte(0);
-//            byteBuffer.put(lens);
             byteBuffer.putInt(0);
         } else {
             writeBytes(v, 0 , v.length);
@@ -110,8 +104,6 @@ public class ProtoOutput implements ObjectOutput {
         check(1);
         byteBuffer.put((byte) 14);
         if (v == null) {
-//            byte[] lens = NumberUtils.intToByte(0);
-//            byteBuffer.put(lens);
             check(4);
             byteBuffer.putInt(0);
         } else {
@@ -242,6 +234,7 @@ public class ProtoOutput implements ObjectOutput {
             cls = obj.getClass();
             Schema schema = RuntimeSchema.getSchema(cls);
             LinkedBuffer buffer = LinkedBuffer.allocate();
+            @SuppressWarnings("unchecked")
             byte[] bytes = ProtostuffIOUtil.toByteArray(obj, schema, buffer);
             int length = bytes.length;
             int totalLength = 1 + 4 + length;
