@@ -247,6 +247,11 @@ public class ProtoOutput implements ObjectOutput {
         } else if (obj instanceof Boolean) {
             boolean b = (boolean) obj;
             writeBool(b);
+        } else if (obj instanceof byte[]) {
+            byte[] bytes = (byte[]) obj;
+            writeBytes(bytes);
+        } else if (obj.getClass().isArray()) {
+            throw new UnsupportedOperationException("暂时不支持数组");
         } else {
             cls = obj.getClass();
             Schema schema = RuntimeSchema.getSchema(cls);
