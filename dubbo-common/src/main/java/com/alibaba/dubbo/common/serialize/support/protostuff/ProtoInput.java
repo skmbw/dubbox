@@ -115,6 +115,7 @@ public class ProtoInput implements ObjectInput {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object readObject() throws IOException, ClassNotFoundException {
         if (bytes == null || bytes.length == 0) {
             return null;
@@ -128,78 +129,13 @@ public class ProtoInput implements ObjectInput {
         }
 
         byte type = byteBuffer.get();
+        // 基本类型和复合类型在一起，导致获取数据长度有问题
         switch (type) {
-            case 0:
-                int totalLength = byteBuffer.getInt();
-                int nameLength = byteBuffer.getInt();
-                byte[] nameBytes = new byte[nameLength];
-                byteBuffer.get(nameBytes);
-                String className = new String(nameBytes);
-                Class clazz = ClassUtils.forName(className);
-                Schema schema = RuntimeSchema.getSchema(clazz);
-
-                Object object = newInstance(clazz);
-
-                byte[] dataBytes = new byte[totalLength - nameLength - 9];
-                byteBuffer.get(dataBytes);
-                ProtostuffIOUtil.mergeFrom(dataBytes, object, schema);
-                return object;
-            case 1:
-                totalLength = byteBuffer.getInt();
-                nameLength = byteBuffer.getInt();
-                nameBytes = new byte[nameLength];
-                byteBuffer.get(nameBytes);
-                className = new String(nameBytes);
-                clazz = ClassUtils.forName(className);
-                schema = RuntimeSchema.getSchema(clazz);
-
-                MessageCollectionSchema collectionSchema = new MessageCollectionSchema(schema);
-                List list = new ArrayList();
-
-                dataBytes = new byte[totalLength - nameLength - 9];
-                byteBuffer.get(dataBytes);
-                ProtostuffIOUtil.mergeFrom(dataBytes, list, collectionSchema);
-                return list;
-            case 2:
-                totalLength = byteBuffer.getInt();
-                nameLength = byteBuffer.getInt();
-                nameBytes = new byte[nameLength];
-                byteBuffer.get(nameBytes);
-                className = new String(nameBytes);
-                clazz = ClassUtils.forName(className);
-                schema = RuntimeSchema.getSchema(clazz);
-
-                collectionSchema = new MessageCollectionSchema(schema);
-                Set set = new HashSet();
-
-                dataBytes = new byte[totalLength - nameLength - 9];
-                byteBuffer.get(dataBytes);
-                ProtostuffIOUtil.mergeFrom(dataBytes, set, collectionSchema);
-                return set;
-            case 3:
-                totalLength = byteBuffer.getInt();
-                nameLength = byteBuffer.getInt();
-                nameBytes = new byte[nameLength];
-                byteBuffer.get(nameBytes);
-                className = new String(nameBytes);
-                clazz = ClassUtils.forName(className);
-                schema = RuntimeSchema.getSchema(clazz);
-
-                StringMapSchema stringSchema = new StringMapSchema(schema);
-                Map map = new HashMap();
-
-                dataBytes = new byte[totalLength - nameLength - 9];
-                byteBuffer.get(dataBytes);
-                ProtostuffIOUtil.mergeFrom(dataBytes, map, stringSchema);
-                return map;
             case 4:
                 return byteBuffer.getInt();
-//                return readInt();
             case 5:
-//                return readLong();
                 return byteBuffer.getLong();
             case 6:
-//                return readDouble();
                 return byteBuffer.getDouble();
             case 7:
                 String s = readString();
@@ -208,22 +144,55 @@ public class ProtoInput implements ObjectInput {
                 s = readString(); // 因为前面调用了get()获取了type，不想再去mark & reset
                 return new BigDecimal(s);
             case 9:
-//                return readByte(); // 标志位 不想 再重置了
+                // 标志位 不想 再重置了
                 return byteBuffer.get();
             case 10:
-//                return readFloat();
                 return byteBuffer.getFloat();
             case 11:
-//                return readShort();
                 return byteBuffer.getShort();
             case 12:
                 return readString();
             case 13:
-//                return readBool();
                 return byteBuffer.get() != 0;
             case 14:
-//                return readBytes();
                 return getBytes();
+        }
+
+        // 和基本类型分开，代码更整洁
+        int totalLength = byteBuffer.getInt();
+        int nameLength = byteBuffer.getInt();
+        byte[] nameBytes = new byte[nameLength];
+        byteBuffer.get(nameBytes);
+        String className = new String(nameBytes);
+        Class clazz = ClassUtils.forName(className);
+        Schema schema = RuntimeSchema.getSchema(clazz);
+
+        byte[] dataBytes = new byte[totalLength - nameLength - 9];
+        byteBuffer.get(dataBytes);
+        switch (type) {
+            case 0:
+                Object object = newInstance(clazz);
+
+                ProtostuffIOUtil.mergeFrom(dataBytes, object, schema);
+                return object;
+            case 1:
+                MessageCollectionSchema collectionSchema = new MessageCollectionSchema(schema);
+                List list = new ArrayList();
+
+                ProtostuffIOUtil.mergeFrom(dataBytes, list, collectionSchema);
+                return list;
+            case 2:
+                collectionSchema = new MessageCollectionSchema(schema);
+                Set set = new HashSet();
+
+                ProtostuffIOUtil.mergeFrom(dataBytes, set, collectionSchema);
+                return set;
+            case 3:
+                StringMapSchema stringSchema = new StringMapSchema(schema);
+                Map map = new HashMap();
+
+                ProtostuffIOUtil.mergeFrom(dataBytes, map, stringSchema);
+                return map;
             default:
 
         }
