@@ -9,9 +9,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
+import java.util.*;
 
 import static com.alibaba.dubbo.common.serialize.support.protostuff.ProtoUtils.fromBytes;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 
 /**
  * 基于Protostuff的，对象反序列化。主要的问题是，dubbo一次把所有的数据都传进来了，而protostuff又没有提供
@@ -139,14 +142,26 @@ public class ProtostuffObjectInput implements ObjectInput {
     }
 
     private byte[] getBytes() {
+        int cap = byteBuffer.capacity();
+        int pos = byteBuffer.position();
+        if (pos + 5 > cap) { // 对于返回null的，除了头，没有信息了
+            return ProtoUtils.EMPTY_BYTES;
+        }
+
         byteBuffer.mark();
-        byte[] lendst = new byte[5];
-        byteBuffer.get(lendst, 0, 5);
-        int len = ProtoUtils.getLength(lendst);
+        byte type = byteBuffer.get();
+        int len;
+        if (type == 3) { // 是hashmap，duboo接口信息，是最后一个字段
+            len = cap - pos;
+        } else {
+            byte[] lendst = new byte[4];
+            byteBuffer.get(lendst, 0, 4);
+            len = getLength(lendst) + 5;
+        }
         byteBuffer.reset();
 
-        byte[] dst = new byte[len + 5];
-        byteBuffer.get(dst, 0, len + 5);
+        byte[] dst = new byte[len];
+        byteBuffer.get(dst, 0, len);
 
         return dst;
     }
@@ -171,9 +186,6 @@ public class ProtostuffObjectInput implements ObjectInput {
         if (LOGGER.isDebugEnabled()) {
             if (o != null) {
                 LOGGER.debug("readObject，数据类型是=[{}].", o.getClass().getName());
-                if (o instanceof HashMap) {
-                    LOGGER.debug("readObject，HashMap数据是=[{}].", o);
-                }
             } else {
                 LOGGER.debug("readObject，反序列化后数据是=[null].");
             }
@@ -194,16 +206,13 @@ public class ProtostuffObjectInput implements ObjectInput {
             LOGGER.debug("readObject(class)，数据类型是=[{}].", cls.getName());
         }
 
-        T t = fromBytes(getBytes()); // 这里会有Map，序列化接口的信息
+        T t = fromBytes(getBytes());
+        if (t == null) {
+            LOGGER.debug("readObject(class)，反序列化后数据是=[null].");
+            return (T) cast(cls);
+        }
         if (LOGGER.isDebugEnabled()) {
-            if (t != null) {
-                LOGGER.debug("readObject(class)，反序列化后数据是=[{}].", t);
-                if (t instanceof HashMap) {
-                    LOGGER.debug("readObject(class)，HashMap数据是=[{}].", t);
-                }
-            } else {
-                LOGGER.debug("readObject(class)，反序列化后数据是=[null].");
-            }
+            LOGGER.debug("readObject(class)，反序列化后数据是=[{}].", t.getClass().getName());
         }
         return t;
     }
@@ -213,7 +222,28 @@ public class ProtostuffObjectInput implements ObjectInput {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readObject(class, type)，数据类型type是=[{}].", type.getTypeName());
         }
-        return readObject(cls);
+        T t = readObject(cls);
+        if (t == null) {
+            return (T) cast(cls);
+        }
+        return t;
+    }
+
+    private <T> Object cast(Class<T> cls) {
+        if (cls.isAssignableFrom(List.class)) {
+            return emptyList();
+        } else if (cls.isAssignableFrom(Set.class)) {
+            return emptySet();
+        } else if (cls.isAssignableFrom(Map.class)) {
+            return emptyMap();
+        } else {
+            try {
+                return cls.newInstance();
+            } catch (Exception e) {
+                LOGGER.error("序列化返回空cls.newInstance错误，msg=[{}].", e.getMessage());
+            }
+        }
+        return null;
     }
 
     private int getLength(byte[] res) {

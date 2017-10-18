@@ -9,6 +9,8 @@ import java.nio.ByteBuffer;
 public class ByteBufferTest {
 
     public static void main(String[] args) {
+//        byte[] em = new byte[0];
+//        System.out.println(em.length + "" + em[0]);
         byte[] bs = new byte[3];
         bs[0] = 1;
         bs[1] = 12;

@@ -20,7 +20,7 @@ import java.util.*;
  * @since 2013-12-12 17:32
  */
 public class ProtoUtils {
-	private static final byte[] EMPTY_BYTES = new byte[0];
+	public static final byte[] EMPTY_BYTES = new byte[0];
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 
 	/**
