@@ -27,7 +27,7 @@ public class ProtoOutput implements ObjectOutput {
 
     public ProtoOutput(OutputStream output) {
         this.output = output;
-        this.byteBuffer = ByteBuffer.allocate(768);
+        this.byteBuffer = ByteBuffer.allocate(1024);
     }
 
     @Override
@@ -283,6 +283,7 @@ public class ProtoOutput implements ObjectOutput {
         if (byteBuffer.remaining() < size) {
             int cap = byteBuffer.capacity() + size + 256;
             ByteBuffer buffer = ByteBuffer.allocate(cap);
+            byteBuffer.flip();
             buffer.put(byteBuffer);
             byteBuffer = buffer;
         }
