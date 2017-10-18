@@ -133,10 +133,7 @@ public class ProtoOutput implements ObjectOutput {
     @Override
     public void writeObject(Object obj) throws IOException {
         if (obj == null) {
-            byte[] heart = new byte[2];
-            heart[0] = 13;
-            heart[1] = 1;
-            output.write(heart);
+            writeBool(true);
             return;
         }
 
