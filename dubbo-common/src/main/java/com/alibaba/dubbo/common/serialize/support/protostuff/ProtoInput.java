@@ -148,7 +148,7 @@ public class ProtoInput implements ObjectInput {
                 return getBytes();
             case 15: // 数组
                 int length = byteBuffer.getInt();
-                byte[] data = new byte[length];
+                byte[] data = new byte[length - 5]; // 去掉类型和长度
                 byteBuffer.get(data);
                 Schema<WrapArray> schema = RuntimeSchema.getSchema(WrapArray.class);
                 WrapArray wrapArray = new WrapArray();
