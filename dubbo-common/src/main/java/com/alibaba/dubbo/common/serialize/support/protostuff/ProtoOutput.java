@@ -27,7 +27,7 @@ public class ProtoOutput implements ObjectOutput {
 
     public ProtoOutput(OutputStream output) {
         this.output = output;
-        this.byteBuffer = ByteBuffer.allocate(1024); // 1kb
+        this.byteBuffer = ByteBuffer.allocate(768);
     }
 
     @Override

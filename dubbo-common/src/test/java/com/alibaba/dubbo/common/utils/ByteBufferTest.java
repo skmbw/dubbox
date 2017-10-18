@@ -22,5 +22,13 @@ public class ByteBufferTest {
         byte b = byteBuffer.get();
         System.out.println(b);
 
+        ByteBuffer buffer = ByteBuffer.allocate(512);
+        buffer.putDouble(234D);
+        System.out.println(buffer.remaining());
+        buffer.flip();
+        int limit = buffer.limit();
+        byte[] actual = new byte[limit];
+        buffer.get(actual);
+        System.out.println();
     }
 }
