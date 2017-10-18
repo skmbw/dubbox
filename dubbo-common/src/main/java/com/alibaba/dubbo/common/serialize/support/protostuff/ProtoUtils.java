@@ -20,7 +20,7 @@ import java.util.*;
  * @since 2013-12-12 17:32
  */
 public class ProtoUtils {
-
+	private static final byte[] EMPTY_BYTES = new byte[0];
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 
 	/**
@@ -31,14 +31,14 @@ public class ProtoUtils {
 	@SuppressWarnings("unchecked")
 	public static byte[] toBytes(Object object) {
 		if (object == null) {
-			return null;
+			return EMPTY_BYTES;
 		}
 		byte[] bytes;
 		Class<Object> clazz;
 		if (object instanceof List) {
 			List<Object> list = (List<Object>) object;
 			if (list.isEmpty()) {
-				return null;
+				return EMPTY_BYTES;
 			}
 			clazz = (Class<Object>) list.get(0).getClass();
 
@@ -48,7 +48,7 @@ public class ProtoUtils {
 		} else if (object instanceof Set) {
 			Set<Object> set = (Set<Object>) object;
 			if (set.isEmpty()) {
-				return null;
+				return EMPTY_BYTES;
 			}
 			clazz = (Class<Object>) set.iterator().next().getClass();
 
@@ -58,7 +58,7 @@ public class ProtoUtils {
 		} else if (object instanceof Map) {
 			Map<String, Object> map = (Map<String, Object>) object;
 			if (map.isEmpty()) {
-				return null;
+				return EMPTY_BYTES;
 			}
 			clazz = (Class<Object>) map.values().iterator().next().getClass();
 			bytes = mapToBytes(clazz, map);

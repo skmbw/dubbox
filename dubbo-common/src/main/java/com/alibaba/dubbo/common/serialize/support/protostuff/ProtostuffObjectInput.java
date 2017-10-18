@@ -115,7 +115,7 @@ public class ProtostuffObjectInput implements ObjectInput {
         return s;
     }
 
-    public String readString() throws IOException {
+    private String readString() throws IOException {
         byte b = byteBuffer.get();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("readString，首字节是=[{}].", b);
@@ -139,11 +139,14 @@ public class ProtostuffObjectInput implements ObjectInput {
     }
 
     private byte[] getBytes() {
-        int pos = byteBuffer.position();
-        int cap = byteBuffer.capacity();
-        int len = cap - pos;
-        byte[] dst = new byte[len];
-        byteBuffer.get(dst, 0, len);
+        byteBuffer.mark();
+        byte[] lendst = new byte[5];
+        byteBuffer.get(lendst, 0, 5);
+        int len = ProtoUtils.getLength(lendst);
+        byteBuffer.reset();
+
+        byte[] dst = new byte[len + 5];
+        byteBuffer.get(dst, 0, len + 5);
 
         return dst;
     }
