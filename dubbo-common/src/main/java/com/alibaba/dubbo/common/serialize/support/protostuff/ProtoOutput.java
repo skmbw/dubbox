@@ -32,43 +32,50 @@ public class ProtoOutput implements ObjectOutput {
 
     @Override
     public void writeBool(boolean v) throws IOException {
-        check(1);
+        check(2);
+        byteBuffer.put((byte) 13); // 数据类型
         byteBuffer.put((byte) 1);
     }
 
     @Override
     public void writeByte(byte v) throws IOException {
-        check(1);
+        check(2);
+        byteBuffer.put((byte) 9);
         byteBuffer.put(v);
     }
 
     @Override
     public void writeShort(short v) throws IOException {
-        check(2);
+        check(3);
+        byteBuffer.put((byte) 11);
         byteBuffer.putShort(v);
     }
 
     @Override
     public void writeInt(int v) throws IOException {
-        check(4);
+        check(5);
+        byteBuffer.put((byte) 4);
         byteBuffer.putInt(v);
     }
 
     @Override
     public void writeLong(long v) throws IOException {
-        check(8);
+        check(9);
+        byteBuffer.put((byte) 5);
         byteBuffer.putLong(v);
     }
 
     @Override
     public void writeFloat(float v) throws IOException {
-        check(4);
+        check(5);
+        byteBuffer.put((byte) 10);
         byteBuffer.putFloat(v);
     }
 
     @Override
     public void writeDouble(double v) throws IOException {
-        check(8);
+        check(9);
+        byteBuffer.put((byte) 6);
         byteBuffer.putDouble(v);
     }
 

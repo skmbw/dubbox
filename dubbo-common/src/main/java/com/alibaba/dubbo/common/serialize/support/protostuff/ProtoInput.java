@@ -12,6 +12,8 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.*;
 
@@ -111,72 +113,84 @@ public class ProtoInput implements ObjectInput {
         }
 
         byte type = byteBuffer.get();
-        int totalLength = byteBuffer.getInt();
-        int nameLength = byteBuffer.getInt();
-        byte[] nameBytes = new byte[nameLength];
-        String className = new String(nameBytes);
-        Class clazz = ClassUtils.forName(className);
-        Schema schema = RuntimeSchema.getSchema(clazz);
-
-        byte[] dataBytes = new byte[totalLength - nameLength - 9];
-        byteBuffer.get(dataBytes);
-
         switch (type) {
             case 0:
+                int totalLength = byteBuffer.getInt();
+                int nameLength = byteBuffer.getInt();
+                byte[] nameBytes = new byte[nameLength];
+                String className = new String(nameBytes);
+                Class clazz = ClassUtils.forName(className);
+                Schema schema = RuntimeSchema.getSchema(clazz);
+
                 Object object = newInstance(clazz);
+
+                byte[] dataBytes = new byte[totalLength - nameLength - 9];
+                byteBuffer.get(dataBytes);
                 ProtostuffIOUtil.mergeFrom(dataBytes, object, schema);
                 return object;
             case 1:
-//                totalLength = byteBuffer.getInt();
-//                nameLength = byteBuffer.getInt();
-//                nameBytes = new byte[nameLength];
-//                className = new String(nameBytes);
-//                clazz = ClassUtils.forName(className);
-//                schema = RuntimeSchema.getSchema(clazz);
+                totalLength = byteBuffer.getInt();
+                nameLength = byteBuffer.getInt();
+                nameBytes = new byte[nameLength];
+                className = new String(nameBytes);
+                clazz = ClassUtils.forName(className);
+                schema = RuntimeSchema.getSchema(clazz);
 
                 MessageCollectionSchema collectionSchema = new MessageCollectionSchema(schema);
                 List list = new ArrayList();
 
-//                dataBytes = new byte[totalLength - nameLength - 9];
-//                byteBuffer.get(dataBytes);
+                dataBytes = new byte[totalLength - nameLength - 9];
+                byteBuffer.get(dataBytes);
                 ProtostuffIOUtil.mergeFrom(dataBytes, list, collectionSchema);
                 return list;
             case 2:
-//                totalLength = byteBuffer.getInt();
-//                nameLength = byteBuffer.getInt();
-//                nameBytes = new byte[nameLength];
-//                className = new String(nameBytes);
-//                clazz = ClassUtils.forName(className);
-//                schema = RuntimeSchema.getSchema(clazz);
+                totalLength = byteBuffer.getInt();
+                nameLength = byteBuffer.getInt();
+                nameBytes = new byte[nameLength];
+                className = new String(nameBytes);
+                clazz = ClassUtils.forName(className);
+                schema = RuntimeSchema.getSchema(clazz);
 
                 collectionSchema = new MessageCollectionSchema(schema);
                 Set set = new HashSet();
 
-//                dataBytes = new byte[totalLength - nameLength - 9];
-//                byteBuffer.get(dataBytes);
+                dataBytes = new byte[totalLength - nameLength - 9];
+                byteBuffer.get(dataBytes);
                 ProtostuffIOUtil.mergeFrom(dataBytes, set, collectionSchema);
                 return set;
             case 3:
+                totalLength = byteBuffer.getInt();
+                nameLength = byteBuffer.getInt();
+                nameBytes = new byte[nameLength];
+                className = new String(nameBytes);
+                clazz = ClassUtils.forName(className);
+                schema = RuntimeSchema.getSchema(clazz);
+
                 StringMapSchema stringSchema = new StringMapSchema(schema);
                 Map map = new HashMap();
+
+                dataBytes = new byte[totalLength - nameLength - 9];
+                byteBuffer.get(dataBytes);
                 ProtostuffIOUtil.mergeFrom(dataBytes, map, stringSchema);
                 return map;
             case 4:
-                break;
+                return readInt();
             case 5:
-                break;
+                return readLong();
             case 6:
-                break;
+                return readDouble();
             case 7:
-                break;
+                String s = readUTF();
+                return new BigInteger(s);
             case 8:
-                break;
+                s = readUTF();
+                return new BigDecimal(s);
             case 9:
-                break;
+                return readByte();
             case 10:
-                break;
+                return readFloat();
             case 11:
-                break;
+                return readShort();
             case 12:
                 return readUTF();
             case 13:
