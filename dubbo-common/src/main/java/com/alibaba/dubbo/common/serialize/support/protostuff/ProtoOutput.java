@@ -116,7 +116,9 @@ public class ProtoOutput implements ObjectOutput {
     @Override
     public void flushBuffer() throws IOException {
         byteBuffer.flip();
-        byte[] bytes = byteBuffer.array();
+        int limit = byteBuffer.limit();
+        byte[] bytes = new byte[limit];
+        byteBuffer.get(bytes);
         output.write(bytes);
         output.flush();
     }
