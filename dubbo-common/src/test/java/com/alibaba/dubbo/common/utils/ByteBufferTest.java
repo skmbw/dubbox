@@ -22,8 +22,18 @@ public class ByteBufferTest {
         byte b = byteBuffer.get();
         System.out.println(b);
 
-        ByteBuffer buffer = ByteBuffer.allocate(512);
+        ByteBuffer buffer = ByteBuffer.allocate(16);
         buffer.putDouble(234D);
+        buffer.putDouble(345D);
+
+        if (buffer.remaining() < 10) {
+            ByteBuffer buffer2 = ByteBuffer.allocate(buffer.capacity() + 32 + 10);
+            buffer.flip();
+            buffer2.put(buffer); // put 之前要切换为读模式
+            buffer = buffer2;
+        }
+        buffer.put(bs);
+
         System.out.println(buffer.remaining());
         buffer.flip();
         int limit = buffer.limit();
