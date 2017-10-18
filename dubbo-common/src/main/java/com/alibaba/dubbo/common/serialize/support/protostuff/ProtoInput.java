@@ -132,10 +132,10 @@ public class ProtoInput implements ObjectInput {
                 return byteBuffer.getDouble();
             case 7:
                 String s = readString();
-                return new BigInteger(s);
+                return new BigInteger(s == null ? "0" : s);
             case 8:
                 s = readString(); // 因为前面调用了get()获取了type，不想再去mark & reset
-                return new BigDecimal(s);
+                return new BigDecimal(s == null ? "0" : s);
             case 9:
                 // 标志位 不想 再重置了
                 return byteBuffer.get();

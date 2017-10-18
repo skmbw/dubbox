@@ -95,6 +95,15 @@ public class ProtoOutput implements ObjectOutput {
         }
     }
 
+    private void writeBig(String v, byte type) throws IOException {
+        byte[] bytes = v.getBytes();
+        int len = bytes.length;
+        check(5 + len);
+        byteBuffer.put(type);
+        byteBuffer.putInt(len);
+        byteBuffer.put(bytes);
+    }
+
     @Override
     public void writeBytes(byte[] v) throws IOException {
         if (v == null || v.length == 0) {
@@ -215,11 +224,11 @@ public class ProtoOutput implements ObjectOutput {
             } else if (obj instanceof BigInteger) {
                 BigInteger s = (BigInteger) obj;
                 String v = s.toString();
-                writeUTF(v);
+                writeBig(v, (byte) 7);
             } else if (obj instanceof BigDecimal) {
                 BigDecimal s = (BigDecimal) obj;
                 String v = s.toString();
-                writeUTF(v);
+                writeBig(v, (byte) 8);
             } else if (obj instanceof Byte) {
                 byte v = (byte) obj;
                 writeByte(v);
