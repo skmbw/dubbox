@@ -151,7 +151,7 @@ public class ProtostuffObjectInput implements ObjectInput {
         byteBuffer.mark();
         byte type = byteBuffer.get();
         int len;
-        if (type == 3) { // 是hashmap，duboo接口信息，是最后一个字段
+        if (type == 3) { // 是hashmap，duboo接口信息，是最后一个字段。要是参数就是hashmap怎么办？
             len = cap - pos;
         } else {
             byte[] lendst = new byte[4];
