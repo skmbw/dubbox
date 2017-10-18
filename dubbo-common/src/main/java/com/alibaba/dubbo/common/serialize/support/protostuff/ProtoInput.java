@@ -214,7 +214,7 @@ public class ProtoInput implements ObjectInput {
         try {
             entity = clazz.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("实例化对象的异常", e);
         }
         return entity;
     }
