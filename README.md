@@ -82,6 +82,12 @@ Dubbox adds features like RESTful remoting, Kyro/FST serialization, etc to the p
     * 增加了google-gRPC-1.0.1的支持，目前仅处于“玩票”阶段，生产环境请慎用（杨俊明）
     * 重写了dubbo-demo模块，提供了rest/dubbo/avro/thrift/grpc五种协议的基本示例(杨俊明)
     * 将zkclient 0.8.1加入项目中，避免大家编译时，要先去pull另一个项目(杨俊明)
+* **dubbox-2.8.6**:
+    * 去掉不常用的一些序列化协议和remoting协议（尹雷）
+    * 增加protostuff序列化协议支持（尹雷）
+    * thrift原生协议，一个端口只能发布一个服务，改为多个服务共用一个端口（尹雷）
+    * 增加netty4 transport支持，在协议中添加 server="netty4" client="netty4"，切换为netty4（尹雷）
+    * 提高一些jar包的版本（尹雷）
 
 ## 依赖
 
@@ -187,6 +193,30 @@ Dubbox adds features like RESTful remoting, Kyro/FST serialization, etc to the p
 </dependency>
 ```
    
+### protostuff序列化
+```xml
+<dependency>
+    <groupId>io.protostuff</groupId>
+    <artifactId>protostuff-runtime</artifactId>
+    <version>1.6.0</version>
+</dependency>
+<dependency>
+    <groupId>io.protostuff</groupId>
+    <artifactId>protostuff-core</artifactId>
+    <version>1.6.0</version>
+</dependency>
+<dependency>
+    <groupId>io.protostuff</groupId>
+    <artifactId>protostuff-api</artifactId>
+    <version>1.6.0</version>
+</dependency>
+<dependency>
+    <groupId>com.google.protobuf</groupId>
+    <artifactId>protobuf-java</artifactId>
+    <version>3.4.0</version>
+</dependency>
+```
+
 ## FAQ（暂存）
 
 ### Dubbox需要什么版本的JDK？
