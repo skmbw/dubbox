@@ -53,6 +53,11 @@
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
+            <artifactId>dubbo-remoting-netty4</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
             <artifactId>dubbo-remoting-mina</artifactId>
             <version>${project.parent.version}</version>
             <exclusions>
@@ -411,30 +416,30 @@
                                     <include>com.alibaba:dubbo-remoting-api</include>
                                     <include>com.alibaba:dubbo-remoting-netty</include>
                                     <include>com.alibaba:dubbo-remoting-netty4</include>
-                                    <include>com.alibaba:dubbo-remoting-mina</include>
-                                    <include>com.alibaba:dubbo-remoting-grizzly</include>
-                                    <include>com.alibaba:dubbo-remoting-p2p</include>
+                                    <!--<include>com.alibaba:dubbo-remoting-mina</include>-->
+                                    <!--<include>com.alibaba:dubbo-remoting-grizzly</include>-->
+                                    <!--<include>com.alibaba:dubbo-remoting-p2p</include>-->
                                     <include>com.alibaba:dubbo-remoting-http</include>
                                     <include>com.alibaba:dubbo-remoting-zookeeper</include>
                                     <include>com.alibaba:dubbo-rpc-api</include>
                                     <include>com.alibaba:dubbo-rpc-avro</include>
                                     <include>com.alibaba:dubbo-rpc-default</include>
                                     <include>com.alibaba:dubbo-rpc-injvm</include>
-                                    <include>com.alibaba:dubbo-rpc-rmi</include>
-                                    <include>com.alibaba:dubbo-rpc-hessian</include>
-                                    <include>com.alibaba:dubbo-rpc-http</include>
-                                    <include>com.alibaba:dubbo-rpc-webservice</include>
+                                    <!--<include>com.alibaba:dubbo-rpc-rmi</include>-->
+                                    <!--<include>com.alibaba:dubbo-rpc-hessian</include>-->
+                                    <!--<include>com.alibaba:dubbo-rpc-http</include>-->
+                                    <!--<include>com.alibaba:dubbo-rpc-webservice</include>-->
                                     <include>com.alibaba:dubbo-rpc-thrift2</include>
                                     <include>com.alibaba:dubbo-rpc-grpc</include>
-                                    <include>com.alibaba:dubbo-rpc-memcached</include>
-                                    <include>com.alibaba:dubbo-rpc-redis</include>
+                                    <!--<include>com.alibaba:dubbo-rpc-memcached</include>-->
+                                    <!--<include>com.alibaba:dubbo-rpc-redis</include>-->
                                     <include>com.alibaba:dubbo-rpc-rest</include>
                                     <include>com.alibaba:dubbo-filter-validation</include>
                                     <include>com.alibaba:dubbo-filter-cache</include>
                                     <include>com.alibaba:dubbo-cluster</include>
                                     <include>com.alibaba:dubbo-registry-api</include>
                                     <include>com.alibaba:dubbo-registry-default</include>
-                                    <include>com.alibaba:dubbo-registry-multicast</include>
+                                    <!--<include>com.alibaba:dubbo-registry-multicast</include>-->
                                     <include>com.alibaba:dubbo-registry-zookeeper</include>
                                     <include>com.alibaba:dubbo-registry-redis</include>
                                     <include>com.alibaba:dubbo-monitor-api</include>
@@ -446,7 +451,7 @@
                                     <include>com.alibaba:dubbo-container-javaconfig</include>
                                     <include>com.alibaba:dubbo-container-jetty</include>
                                     <include>com.alibaba:dubbo-container-log4j</include>
-                                    <include>com.alibaba:dubbo-container-logback</include>
+                                    <!--<include>com.alibaba:dubbo-container-logback</include>-->
                                 </includes>
                             </artifactSet>
                             <transformers>

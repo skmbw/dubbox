@@ -34,6 +34,6 @@
 		<module>dubbo-container-javaconfig</module>
 		<module>dubbo-container-jetty</module>
 		<module>dubbo-container-log4j</module>
-		<module>dubbo-container-logback</module>
+		<!--<module>dubbo-container-logback</module>-->
 	</modules>
 </project>
