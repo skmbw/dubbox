@@ -23,7 +23,10 @@ import com.alibaba.dubbo.remoting.Server;
 import com.alibaba.dubbo.remoting.Transporter;
 
 /**
+ * Netty4 Transporter
+ *
  * @author wuwen
+ * @author yinlei
  */
 public class NettyTransporter implements Transporter {
 
@@ -36,5 +39,4 @@ public class NettyTransporter implements Transporter {
     public Client connect(URL url, ChannelHandler listener) throws RemotingException {
         return new NettyClient(url, listener);
     }
-
 }

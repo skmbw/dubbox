@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class NettyClient extends AbstractClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(NettyClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
 
     private Bootstrap bootstrap;
 
@@ -58,8 +58,8 @@ public class NettyClient extends AbstractClient {
         DEFAULT_EVENT_LOOP_THREADS = Math.max(1, SystemPropertyUtil.getInt(
                 "io.netty.eventLoopThreads", Constants.DEFAULT_IO_THREADS));
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("-Dio.netty.eventLoopThreads: " + DEFAULT_EVENT_LOOP_THREADS);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("-Dio.netty.eventLoopThreads: " + DEFAULT_EVENT_LOOP_THREADS);
         }
     }
 
@@ -102,8 +102,8 @@ public class NettyClient extends AbstractClient {
                     Channel oldChannel = NettyClient.this.channel; // copy reference
                     if (oldChannel != null) {
                         try {
-                            if (logger.isInfoEnabled()) {
-                                logger.info("Close old netty channel " + oldChannel + " on create new netty channel " + newChannel);
+                            if (LOGGER.isInfoEnabled()) {
+                                LOGGER.info("Close old netty channel " + oldChannel + " on create new netty channel " + newChannel);
                             }
                             oldChannel.close().syncUninterruptibly();
                         } finally {
@@ -113,8 +113,8 @@ public class NettyClient extends AbstractClient {
                 } finally {
                     if (NettyClient.this.isClosed()) {
                         try {
-                            if (logger.isInfoEnabled()) {
-                                logger.info("Close new netty channel " + newChannel + ", because the client closed.");
+                            if (LOGGER.isInfoEnabled()) {
+                                LOGGER.info("Close new netty channel " + newChannel + ", because the client closed.");
                             }
                             newChannel.close().syncUninterruptibly();
                         } finally {
@@ -146,7 +146,7 @@ public class NettyClient extends AbstractClient {
         try {
             NettyChannel.removeChannelIfDisconnected(channel);
         } catch (Throwable t) {
-            logger.warn(t.getMessage());
+            LOGGER.warn(t.getMessage());
         }
     }
     

@@ -47,7 +47,7 @@ import java.util.Map;
  */
 public class NettyServer extends AbstractServer implements Server {
 
-    private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NettyServer.class);
 
     private Map<String, Channel>  channels; // <ip:port, channel>
 
@@ -102,7 +102,7 @@ public class NettyServer extends AbstractServer implements Server {
                 channel.close().syncUninterruptibly();
             }
         } catch (Throwable e) {
-            logger.warn(e.getMessage(), e);
+            LOGGER.warn(e.getMessage(), e);
         }
         try {
             Collection<com.alibaba.dubbo.remoting.Channel> channels = getChannels();
@@ -111,12 +111,12 @@ public class NettyServer extends AbstractServer implements Server {
                     try {
                         channel.close();
                     } catch (Throwable e) {
-                        logger.warn(e.getMessage(), e);
+                        LOGGER.warn(e.getMessage(), e);
                     }
                 }
             }
         } catch (Throwable e) {
-            logger.warn(e.getMessage(), e);
+            LOGGER.warn(e.getMessage(), e);
         }
 
         try {
@@ -128,7 +128,7 @@ public class NettyServer extends AbstractServer implements Server {
                 workerGroup.shutdownGracefully();
             }
         } catch (Throwable e) {
-            logger.warn(e.getMessage(), e);
+            LOGGER.warn(e.getMessage(), e);
         }
 
         try {
@@ -136,7 +136,7 @@ public class NettyServer extends AbstractServer implements Server {
                 channels.clear();
             }
         } catch (Throwable e) {
-            logger.warn(e.getMessage(), e);
+            LOGGER.warn(e.getMessage(), e);
         }
     }
     
