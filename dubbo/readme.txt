@@ -2,6 +2,7 @@
 修改注意：
 
 1) 添加了新的模块，要在POM中maven-shade-plugin的<artifactSet>中添加<include>
+<dependency></dependency>也要加上，否则不会将其打包到最终的jar中
 
 2) 添加了新的扩展点，要在POM中maven-shade-plugin加上<transformer>
 
