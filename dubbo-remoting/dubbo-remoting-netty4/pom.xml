@@ -18,53 +18,25 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.alibaba</groupId>
-        <artifactId>dubbo-rpc</artifactId>
+        <artifactId>dubbo-remoting</artifactId>
         <version>2.8.6</version>
     </parent>
-    <artifactId>dubbo-rpc-grpc</artifactId>
+    <artifactId>dubbo-remoting-netty4</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <description>The grpc module of dubbo project</description>
+    <description>The netty remoting module of dubbo project</description>
     <properties>
         <skip_maven_deploy>true</skip_maven_deploy>
-
     </properties>
     <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>
-            <artifactId>dubbo-rpc-api</artifactId>
+            <artifactId>dubbo-remoting-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-
-
-        <dependency>
-            <groupId>io.grpc</groupId>
-            <artifactId>grpc-netty</artifactId>
-            <version>1.0.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.netty</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>io.grpc</groupId>
-            <artifactId>grpc-protobuf</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>io.grpc</groupId>
-            <artifactId>grpc-stub</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-
     </dependencies>
-
 </project>
