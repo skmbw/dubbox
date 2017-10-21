@@ -71,7 +71,7 @@
     </profiles>
     <properties>
         <!-- Common libs -->
-        <spring.bom.version>4.3.7.RELEASE</spring.bom.version>
+        <spring.bom.version>4.3.12.RELEASE</spring.bom.version>
         <javassist_version>3.15.0-GA</javassist_version>
         <netty_version>3.10.6.Final</netty_version>
         <netty4_version>4.1.16.Final</netty4_version>
@@ -80,7 +80,7 @@
         <httpclient_version>4.3.4</httpclient_version>
         <hessian_lite_version>3.2.2-SNAPSHOT</hessian_lite_version>
         <xstream_version>1.4.8</xstream_version>
-        <fastjson_version>1.2.30</fastjson_version>
+        <fastjson_version>1.2.38</fastjson_version>
         <bsf_version>3.1</bsf_version>
         <sorcerer_version>0.8</sorcerer_version>
         <zookeeper_version>3.4.8</zookeeper_version>
@@ -111,11 +111,11 @@
         <commons-lang_version>2.6</commons-lang_version>
         <tomcat_embed_version>8.0.11</tomcat_embed_version>
         <!-- Log libs -->
-        <slf4j_version>1.7.15</slf4j_version>
+        <slf4j_version>1.7.25</slf4j_version>
         <jcl_version>1.1</jcl_version>
         <log4j_version>1.2.17</log4j_version>
         <logback_version>1.1.5</logback_version>
-        <log4j2_version>2.5</log4j2_version>
+        <log4j2_version>2.9.1</log4j2_version>
         <!-- Test libs -->
         <junit_version>4.10</junit_version>
         <easymock_version>3.0</easymock_version>
@@ -129,9 +129,9 @@
         <resteasy-jdk-http_version>3.0.14.Final</resteasy-jdk-http_version>
         <resteasy-jackson-provider_version>3.0.14.Final</resteasy-jackson-provider_version>
         <resteasy-jaxb-provider_version>3.0.16.Final</resteasy-jaxb-provider_version>
-        <kryo_version>2.24.0</kryo_version>
-        <kryo-serializers_version>0.37</kryo-serializers_version>
-        <fst_version>2.44</fst_version>
+        <kryo_version>4.0.1</kryo_version>
+        <kryo-serializers_version>0.42</kryo-serializers_version>
+        <fst_version>2.54</fst_version>
 
         <!-- Build args -->
         <!--<argline>-server -Xms64m -Xmx64m -XX:PermSize=64m -XX:MaxPermSize=64m</argline> -->
@@ -477,9 +477,9 @@
                 <version>${resteasy-jaxb-provider_version}</version>
             </dependency>
             <dependency>
-                <groupId>com.esotericsoftware.kryo</groupId>
+                <groupId>com.esotericsoftware</groupId>
                 <artifactId>kryo</artifactId>
-                <version>2.24.0</version>
+                <version>${kryo_version}</version>
             </dependency>
             <dependency>
                 <groupId>de.javakaffee</groupId>
