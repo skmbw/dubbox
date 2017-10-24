@@ -230,7 +230,7 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
 	                	Object value = refer(reference, method.getParameterTypes()[0]);
 	                	if (value != null) {
 	                		method.invoke(bean, value);
-                            regist(value, StringUtils.uncapitalize(method.getParameterTypes()[0].getSimpleName()));
+//                            regist(value, StringUtils.uncapitalize(method.getParameterTypes()[0].getSimpleName()));
 	                	}
                 	}
                 } catch (Exception e) {
@@ -252,7 +252,7 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
 	                if (value != null) {
 	                	field.set(bean, value);
 	                	// yinlei 将@Reference注册的 Bean 放入Spring上下文中
-                        regist(value, field.getName());
+                        //regist(value, field.getName());
 	                }
             	}
             } catch (Exception e) {
