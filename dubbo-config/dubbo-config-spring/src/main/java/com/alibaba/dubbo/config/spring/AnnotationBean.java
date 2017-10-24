@@ -28,10 +28,12 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -52,6 +54,8 @@ import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.config.ServiceConfig;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 
 /**
  * AnnotationBean
@@ -192,7 +196,7 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
                 try {
                     serviceConfig.afterPropertiesSet();
                 } catch (RuntimeException e) {
-                    throw (RuntimeException) e;
+                    throw e;
                 } catch (Exception e) {
                     throw new IllegalStateException(e.getMessage(), e);
                 }
@@ -225,7 +229,8 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
                 	if (reference != null) {
 	                	Object value = refer(reference, method.getParameterTypes()[0]);
 	                	if (value != null) {
-	                		method.invoke(bean, new Object[] { value });
+	                		method.invoke(bean, value);
+                            regist(value, StringUtils.uncapitalize(method.getParameterTypes()[0].getSimpleName()));
 	                	}
                 	}
                 } catch (Exception e) {
@@ -246,6 +251,8 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
 	                Object value = refer(reference, field.getType());
 	                if (value != null) {
 	                	field.set(bean, value);
+	                	// yinlei 将@Reference注册的 Bean 放入Spring上下文中
+                        regist(value, field.getName());
 	                }
             	}
             } catch (Exception e) {
@@ -255,6 +262,28 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
             }
         }
         return bean;
+    }
+
+    private void regist(Object bean, String beanName) {
+        try {
+            XmlWebApplicationContext context = (XmlWebApplicationContext) applicationContext;
+            ConfigurableListableBeanFactory factory = context.getBeanFactory();
+            Object object = null;
+            try {
+                object = factory.getBean(beanName);
+            } catch (NoSuchBeanDefinitionException e) {
+                logger.debug("在Spring上下文中，没有找到Bean，将添加@Reference注入的Bean，" + e.getMessage());
+            }
+
+            if (object == null) {
+                logger.debug("Spring上下文没有beanName=[" + beanName + "]，将添加。");
+                factory.registerSingleton(beanName, bean);
+            } else {
+                logger.debug("在Spring上下文[" + applicationContext.getDisplayName() + "]，找到beanName=[" + beanName + "]");
+            }
+        } catch (Exception e) {
+            logger.debug("将@Reference注入的Bean注册到Spring上下文中，" + e.getMessage());
+        }
     }
 
     private Object refer(Reference reference, Class<?> referenceClass) { //method.getParameterTypes()[0]
