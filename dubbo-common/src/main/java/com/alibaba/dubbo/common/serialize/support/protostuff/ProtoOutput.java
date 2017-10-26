@@ -267,7 +267,6 @@ public class ProtoOutput implements ObjectOutput {
         } else if (obj instanceof Throwable) {
             // 因为异常的超类Throwable中的cause是引用的自己，有循环引用。目前protostuff还不能处理，fst倒是可以。
             // 所以，自己简单将其序列化，只返回类名和message。
-            byteBuffer.put((byte) 16);
             byte[] nameBytes = obj.getClass().getName().getBytes();
             Throwable throwable = (Throwable) obj;
             String message = throwable.getMessage();
@@ -280,6 +279,8 @@ public class ProtoOutput implements ObjectOutput {
             if (messageBytes != null) {
                 totalLength += messageBytes.length;
             }
+            check(totalLength + 9);
+            byteBuffer.put((byte) 16);
             byteBuffer.putInt(totalLength);
             byteBuffer.putInt(nameLength);
             byteBuffer.put(nameBytes);
