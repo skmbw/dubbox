@@ -154,6 +154,20 @@ public class ProtoInput implements ObjectInput {
                 WrapArray wrapArray = new WrapArray();
                 ProtostuffIOUtil.mergeFrom(data, wrapArray, schema);
                 return wrapArray.getArray();
+            case 16: // 异常
+                int totalLength = byteBuffer.getInt();
+                int nameLength = byteBuffer.getInt();
+                byte[] classNameBytes = new byte[nameLength];
+                byteBuffer.get(classNameBytes);
+                String message = "";
+                if (totalLength > nameLength) {
+                    int messageLength = totalLength - nameLength;
+                    byte[] messageBytes = new byte[messageLength];
+                    byteBuffer.get(messageBytes);
+                    message = new String(messageBytes);
+                }
+                String className = new String(classNameBytes);
+                return new RuntimeException(className + ";message=" + message);
         }
 
         // 和基本类型分开，代码更整洁
