@@ -164,9 +164,9 @@ public class ProtoInput implements ObjectInput {
                     int messageLength = totalLength - nameLength;
                     byte[] messageBytes = new byte[messageLength];
                     byteBuffer.get(messageBytes);
-                    message = new String(messageBytes);
+                    message = new String(messageBytes, "UTF-8");
                 }
-                String className = new String(classNameBytes);
+                String className = new String(classNameBytes, "UTF-8");
                 return new RuntimeException(className + ";message=" + message);
         }
 
