@@ -87,7 +87,7 @@ public class ProtoInput implements ObjectInput {
         if (length != 0) {
             byte[] data = new byte[length];
             byteBuffer.get(data);
-            return new String(data);
+            return new String(data, "UTF-8");
         }
         return null;
     }
@@ -187,7 +187,7 @@ public class ProtoInput implements ObjectInput {
         int nameLength = byteBuffer.getInt();
         byte[] nameBytes = new byte[nameLength];
         byteBuffer.get(nameBytes);
-        String className = new String(nameBytes);
+        String className = new String(nameBytes, "UTF-8");
         Class clazz = ClassUtils.forName(className);
         Schema schema = RuntimeSchema.getSchema(clazz);
 

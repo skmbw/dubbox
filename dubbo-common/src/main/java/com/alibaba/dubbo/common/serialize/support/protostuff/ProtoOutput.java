@@ -87,7 +87,7 @@ public class ProtoOutput implements ObjectOutput {
             check(4);
             byteBuffer.putInt(0); // 长度为0
         } else {
-            byte[] bytes = v.getBytes();
+            byte[] bytes = v.getBytes("UTF-8");
             int len = bytes.length;
             check(4 + len);
             byteBuffer.putInt(len);
@@ -96,7 +96,7 @@ public class ProtoOutput implements ObjectOutput {
     }
 
     private void writeBig(String v, byte type) throws IOException {
-        byte[] bytes = v.getBytes();
+        byte[] bytes = v.getBytes("UTF-8");
         int len = bytes.length;
         check(5 + len);
         byteBuffer.put(type);
@@ -156,7 +156,7 @@ public class ProtoOutput implements ObjectOutput {
                 return;
             }
             cls = list.get(0).getClass();
-            byte[] nameBytes = cls.getName().getBytes();
+            byte[] nameBytes = cls.getName().getBytes("UTF-8");
             int nameLength = nameBytes.length;
             byte[] listBytes = collectToBytes(cls, list);
             int dataLength = listBytes.length;
@@ -177,7 +177,7 @@ public class ProtoOutput implements ObjectOutput {
                 return;
             }
             cls = set.iterator().next().getClass();
-            byte[] nameBytes = cls.getName().getBytes();
+            byte[] nameBytes = cls.getName().getBytes("UTF-8");
             int nameLength = nameBytes.length;
             byte[] dataBytes = collectToBytes(cls, set);
             int dataLength = dataBytes.length;
@@ -199,7 +199,7 @@ public class ProtoOutput implements ObjectOutput {
             }
             // value对象的类型
             cls = map.values().iterator().next().getClass();
-            byte[] nameBytes = cls.getName().getBytes();
+            byte[] nameBytes = cls.getName().getBytes("UTF-8");
             int nameLength = nameBytes.length;
             byte[] mapBytes = mapToBytes(cls, map);
             int dataLength = mapBytes.length;
@@ -295,7 +295,7 @@ public class ProtoOutput implements ObjectOutput {
             @SuppressWarnings("unchecked")
             byte[] bytes = ProtostuffIOUtil.toByteArray(obj, schema, buffer);
             int length = bytes.length;
-            byte[] nameBytes = cls.getName().getBytes();
+            byte[] nameBytes = cls.getName().getBytes("UTF-8");
             int nameLength = nameBytes.length;
             int totalLength = 9 + nameLength + length;
             check(totalLength);
