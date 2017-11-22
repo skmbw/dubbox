@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.alibaba.dubbo.common.serialize.support.protostuff.ProtoInput.ARRAY_SCHEMA;
+
 /**
  * 基于ByteBuffer实现的数据输出流。
  *
@@ -90,7 +92,7 @@ public class ProtoOutput implements ObjectOutput {
             byte[] bytes = v.getBytes("UTF-8");
             int len = bytes.length;
             check(4 + len);
-            byteBuffer.putInt(len);
+            byteBuffer.putInt(len); // int 占 4 位
             byteBuffer.put(bytes); // 存入数据
         }
     }
@@ -254,9 +256,9 @@ public class ProtoOutput implements ObjectOutput {
             Object[] array = (Object[]) obj;
             // throw new UnsupportedOperationException("暂时不支持数组");
             WrapArray wrapArray = new WrapArray(array);
-            Schema<WrapArray> schema = RuntimeSchema.getSchema(WrapArray.class);
+
             LinkedBuffer buffer = LinkedBuffer.allocate(1024);
-            byte[] bytes = ProtostuffIOUtil.toByteArray(wrapArray, schema, buffer);
+            byte[] bytes = ProtostuffIOUtil.toByteArray(wrapArray, ARRAY_SCHEMA, buffer);
 
             int length = bytes.length;
             int totalLength = 5 + length;

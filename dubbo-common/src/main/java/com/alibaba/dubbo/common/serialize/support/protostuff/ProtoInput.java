@@ -22,6 +22,8 @@ import java.util.*;
  */
 public class ProtoInput implements ObjectInput {
 
+    public static final Schema<WrapArray> ARRAY_SCHEMA = RuntimeSchema.getSchema(WrapArray.class);
+
     private byte[] bytes;
     private ByteBuffer byteBuffer;
 
@@ -150,9 +152,9 @@ public class ProtoInput implements ObjectInput {
                 int length = byteBuffer.getInt();
                 byte[] data = new byte[length - 5]; // 去掉类型和长度
                 byteBuffer.get(data);
-                Schema<WrapArray> schema = RuntimeSchema.getSchema(WrapArray.class);
+
                 WrapArray wrapArray = new WrapArray();
-                ProtostuffIOUtil.mergeFrom(data, wrapArray, schema);
+                ProtostuffIOUtil.mergeFrom(data, wrapArray, ARRAY_SCHEMA);
                 return wrapArray.getArray();
             case 16: // 异常
                 int totalLength = byteBuffer.getInt();
@@ -170,11 +172,11 @@ public class ProtoInput implements ObjectInput {
                 return new RuntimeException(className + ";message=" + message);
         }
 
-        // 和基本类型分开，代码更整洁
+        // 集合和对象类型和基本类型分开，代码更整洁
         int totalLength = byteBuffer.getInt();
         if (totalLength == 0) {
             switch (type) {
-                case 0:
+                case 0: // 对象
                     return null;
                 case 1:
                     return Collections.emptyList();
