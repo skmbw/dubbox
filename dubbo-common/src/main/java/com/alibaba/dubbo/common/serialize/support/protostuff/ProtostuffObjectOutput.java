@@ -14,6 +14,7 @@ import java.util.HashMap;
  * @author yinlei
  * @since 2017/10/13 9:28
  */
+@Deprecated
 public class ProtostuffObjectOutput implements ObjectOutput {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtostuffObjectOutput.class);

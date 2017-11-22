@@ -23,6 +23,7 @@ import static java.util.Collections.emptySet;
  * @author yinlei
  * @since 2017/10/13 9:28
  */
+@Deprecated
 public class ProtostuffObjectInput implements ObjectInput {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtostuffObjectInput.class);
