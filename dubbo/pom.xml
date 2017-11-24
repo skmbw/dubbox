@@ -461,7 +461,7 @@
                                     <include>com.alibaba:dubbo-container-javaconfig</include>
                                     <include>com.alibaba:dubbo-container-jetty</include>
                                     <include>com.alibaba:dubbo-container-log4j</include>
-                                    <!--<include>com.alibaba:dubbo-container-logback</include>-->
+                                    <include>com.alibaba:dubbo-container-logback</include>
                                 </includes>
                             </artifactSet>
                             <transformers>
