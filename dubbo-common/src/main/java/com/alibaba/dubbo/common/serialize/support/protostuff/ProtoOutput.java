@@ -255,6 +255,7 @@ public class ProtoOutput implements ObjectOutput {
         } else if (obj.getClass().isArray()) {
             Object[] array = (Object[]) obj;
             // throw new UnsupportedOperationException("暂时不支持数组");
+            // 数组类型使用包装类，可以序列化，但是protobuf是记录对象类型的，序列化后的数据变大，性能稍低
             WrapArray wrapArray = new WrapArray(array);
 
             LinkedBuffer buffer = LinkedBuffer.allocate(1024);

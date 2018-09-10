@@ -5,6 +5,7 @@ import com.alibaba.dubbo.common.serialize.ObjectInput;
 import io.protostuff.*;
 import io.protostuff.runtime.RuntimeSchema;
 import org.apache.commons.io.IOUtils;
+import org.objenesis.ObjenesisHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +35,7 @@ public class ProtoInput implements ObjectInput {
 
     @Override
     public boolean readBool() throws IOException {
-        byteBuffer.get();
+        byteBuffer.get(); // 这个是数据类型，pass，当然也可以验证（其实没有必要）
         return byteBuffer.get() != 0;
     }
 
@@ -119,7 +120,7 @@ public class ProtoInput implements ObjectInput {
         if (bytes == null || bytes.length == 0) {
             return null;
         }
-
+        // 获取基本类型，因为dubbo中有调用readObject方法获取基本类型的，所以要处理
         byte type = byteBuffer.get();
         // 基本类型和复合类型在一起，导致获取数据长度有问题
         switch (type) {
@@ -156,7 +157,7 @@ public class ProtoInput implements ObjectInput {
                 WrapArray wrapArray = new WrapArray();
                 ProtostuffIOUtil.mergeFrom(data, wrapArray, ARRAY_SCHEMA);
                 return wrapArray.getArray();
-            case 16: // 异常
+            case 16: // 异常，Exception中的clause是循环引用，直接序列化会OOE
                 int totalLength = byteBuffer.getInt();
                 int nameLength = byteBuffer.getInt();
                 byte[] classNameBytes = new byte[nameLength];
@@ -197,26 +198,23 @@ public class ProtoInput implements ObjectInput {
         byteBuffer.get(dataBytes);
         switch (type) {
             case 0:
-                Object object = newInstance(clazz);
-
+                // 这个不调用构造函数，有一个副作用，就是基本类型的默认值没有了，数值类都是0
+                Object object = ObjenesisHelper.newInstance(clazz); // newInstance(clazz);
                 ProtostuffIOUtil.mergeFrom(dataBytes, object, schema);
                 return object;
             case 1:
                 MessageCollectionSchema collectionSchema = new MessageCollectionSchema(schema);
                 List list = new ArrayList();
-
                 ProtostuffIOUtil.mergeFrom(dataBytes, list, collectionSchema);
                 return list;
             case 2:
                 collectionSchema = new MessageCollectionSchema(schema);
                 Set set = new HashSet();
-
                 ProtostuffIOUtil.mergeFrom(dataBytes, set, collectionSchema);
                 return set;
             case 3:
                 StringMapSchema stringSchema = new StringMapSchema(schema);
                 Map map = new HashMap();
-
                 ProtostuffIOUtil.mergeFrom(dataBytes, map, stringSchema);
                 return map;
             default:
